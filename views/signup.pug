@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    h1= title
+
+    form(method="POST" action="/user/signup/register")
+        div
+            label User Name:
+            input(type='text', name='username')
+        div
+            label Password:
+            input(type='password', name='password')
+        button(type='submit') Sign Up
