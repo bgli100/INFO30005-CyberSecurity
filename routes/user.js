@@ -2,9 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 
-//routes to the home page
 router.get('/', function(req, res, next) {
-  res.render('home', { title: 'Team Cyberium' });
+    res.render('home', { title: 'User Management' });
 });
 
 module.exports = router;
