@@ -23,8 +23,7 @@ router.post('/posting', function(req, res, next) {
 
 // go to each post
 router.get('/post/*',function(req, res, next) {
-    a = post.getTitleAndContent(req.path);
-    console.log(req.path);
+    let a = post.getTitleAndContent(req.path);
     res.render('post', {title:a[0], content:a[1]});
-})
+});
 module.exports = router;
