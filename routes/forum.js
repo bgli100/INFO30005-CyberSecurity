@@ -43,4 +43,12 @@ router.get('/post/*',function(req, res, next) {
     res.send("title " + a[0] + '\n\n' + 'content\n\n' + a[1]);
 });
 
+// give rating to a specific post
+router.post('/post/rating', function(req, res, next) {
+    path = req.body.path;
+    rating = req.body.rating;
+    post.updateRating(path, rating);
+
+
+});
 module.exports = router;

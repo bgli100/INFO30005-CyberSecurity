@@ -58,4 +58,18 @@ function getTitleAndContent(href){
 function getAllPosts(){
     return posts;
 }
-module.exports = {getHrefs, getTitles, post, getTitleAndContent, getAllPosts};
+
+/**
+ * update the rating of a post
+ * @param {} href 
+ * @param {*} rating 
+ */
+function updateRating(href, rating){
+    for (post of posts){
+        if (post['href'] == href){
+            post['rating'] += rating;
+            return post['rating'];
+        }
+    }
+}
+module.exports = {getHrefs, getTitles, post, getTitleAndContent, getAllPosts, updateRating};
