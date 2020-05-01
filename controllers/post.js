@@ -41,12 +41,13 @@ function getHrefs(hrefs){
  * @param {*} href 
  * return a list of [title, content]
  */
-function getTitleAndContent(href){
+function getTitleAndContentAndComments(href){
     for (post of posts){
         if (href === post['href']){
             title = post['title'];
             content = post['content'];
-            return [title,content];
+            comments = post['comments']
+            return [title,content, comments];
         }
     }
 }
@@ -59,19 +60,6 @@ function getAllPosts(){
     return posts;
 }
 
-/**
- * update the rating of a post
- * @param {} href 
- * @param {*} rating 
- */
-function updateRating(href, rating){
-    for (post of posts){
-        if (post['href'] == href){
-            post['rating'] += parseInt(rating);
-            return post['rating'];
-        }
-    }
-}
 
 /**
  * get posts associated by certain tags
@@ -100,5 +88,5 @@ function addComment(href, comment){
         }
     }
 }
-module.exports = {getHrefs, getTitles, post, getTitleAndContent, getAllPosts,
-                  updateRating, getPostsByTag, addComment};
+module.exports = {getHrefs, getTitles, post, getTitleAndContentAndComments, getAllPosts,
+                  getPostsByTag, addComment};
