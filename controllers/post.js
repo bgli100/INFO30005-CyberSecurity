@@ -67,9 +67,24 @@ function getAllPosts(){
 function updateRating(href, rating){
     for (post of posts){
         if (post['href'] == href){
-            post['rating'] += rating;
+            post['rating'] += parseInt(rating);
             return post['rating'];
         }
     }
 }
-module.exports = {getHrefs, getTitles, post, getTitleAndContent, getAllPosts, updateRating};
+
+/**
+ * get posts associated by certain tags
+ * @param {*} tag 
+ * @param {*} res an empty array to be put
+ */
+function getPostsByTag(tag, res){
+    for (post of posts) {
+        if (post['tags'].includes(tag)){
+            res.push(post);
+        }
+    }
+    return res;
+}
+module.exports = {getHrefs, getTitles, post, getTitleAndContent, getAllPosts,
+                  updateRating, getPostsByTag};

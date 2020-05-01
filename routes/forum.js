@@ -43,12 +43,21 @@ router.get('/post/*',function(req, res, next) {
     res.send("title " + a[0] + '\n\n' + 'content\n\n' + a[1]);
 });
 
-// give rating to a specific post
-router.post('/post/rating', function(req, res, next) {
-    path = req.body.path;
-    rating = req.body.rating;
-    post.updateRating(path, rating);
-
-
+// get post by certain tags
+router.post('/tag', function(req, res, next){
+    let posts = [];
+    post.getPostsByTag(req.body.tag, posts);
+    res.send(posts);
 });
+
+
+// give rating to a specific post
+router.post('/rating', function(req, res, next) {
+    let path = req.body.path;
+    let rating = req.body.rating;
+    let new_rating = post.updateRating(path, rating);
+
+    res.send("The new rating is " + new_rating);
+});
+
 module.exports = router;
