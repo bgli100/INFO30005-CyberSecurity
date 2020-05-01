@@ -86,5 +86,19 @@ function getPostsByTag(tag, res){
     }
     return res;
 }
+
+/**
+ * add comments to a post
+ * @param {} href 
+ * @return post
+ */
+function addComment(href, comment){
+    for (post of posts) {
+        if (post['href'] == href) {
+           post['comments'].push(comment);
+           return post; 
+        }
+    }
+}
 module.exports = {getHrefs, getTitles, post, getTitleAndContent, getAllPosts,
-                  updateRating, getPostsByTag};
+                  updateRating, getPostsByTag, addComment};

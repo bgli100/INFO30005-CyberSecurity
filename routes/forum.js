@@ -50,6 +50,11 @@ router.post('/tag', function(req, res, next){
     res.send(posts);
 });
 
+// add a comment to a post
+router.post('/comment', function(req, res, next){
+    post = post.addComment(req.body.path. req.body.comment);
+    res.send(post);
+});
 
 // give rating to a specific post
 router.post('/rating', function(req, res, next) {
