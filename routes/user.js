@@ -2,30 +2,50 @@ const express = require('express');
 const router = express.Router();
 const login = require('../controllers/login');
 const register = require("../controllers/register");
-// user login page
+
+
+ // list an array of existing user names
 router.get('/', function(req, res, next) {
-    res.render('user', { title: 'User Management' });
+    let userNames = [];
+    // use login controller to get all names
+    login.getUsers(userNames);
+    res.send(userNames);
 });
+
 
 // handle user login
+// needs to be in default or specify the content type as 
+// application/x-www-form-urlencoded in the request header
+// in the body, enter in x-www-form-urlencoded form,
+// userName : value, password : value
 router.post('/login', function(req, res, next) {
-    userName = req.body.username;
-    if (login(userName, req.body.password)){
-        res.render('message', {title: "successfully log in!"});
+    userName = req.body.userName;
+
+    // pass to login controller to check the validity of the log in
+    if (login.checkUser(userName, req.body.password)){
+        res.send("Welcome " + userName);
     }
     else{
-        res.render('unsuccessful_login');
+        res.send('unsuccessful login!');
     }
 });
 
-// user sign up page
-router.get('/signup', function(req, res, next) {
+/** used in later assessment with front end
+ // user sign up page
+    router.get('/signup', function(req, res, next) {
     res.render('signup', { title: 'User Sign Up' });
 });
+ */
+
 
 // register new user into the database
-router.post('/signup/register', function(req, res, next) {
-    register(req.body.username, req.body.password);
-    res.render('message', {title: "successfully register!"});
+// needs to be in default or specify the content type as 
+// application/x-www-form-urlencoded in the request header
+// in the body, enter in x-www-form-urlencoded form,
+// userName : value, password : value
+router.post('/signup', function(req, res, next) {
+    // use register controller to register new user into the database
+    register(req.body.userName, req.body.password);
+    res.send("Welcome new user " + req.body.userName + '!');
 });
 module.exports = router;

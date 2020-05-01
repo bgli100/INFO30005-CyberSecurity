@@ -1,6 +1,15 @@
+/**
+ * controller that handles user login
+ */
 var users = require("../models/userInfo");
 
-var login = function(userName, pwd){
+/**
+ * check if a pair of user name and password is valid
+ * @param {*} userName 
+ * @param {*} pwd 
+ * @return true if user name exactly matches password
+ */
+function checkUser(userName, pwd){
     for (user of users){
         if (user['userName'] == userName && user['password'] == pwd) {
             return true;
@@ -10,4 +19,13 @@ var login = function(userName, pwd){
     return false;
 }
 
-module.exports = login;
+/**
+ * get all user names registered in this website
+ * @param {} userNames an empty list to be added
+ */
+function getUsers(userNames){
+    for (user of users) {
+        userNames.push(user["userName"]);
+    }
+}
+module.exports = {checkUser, getUsers};
