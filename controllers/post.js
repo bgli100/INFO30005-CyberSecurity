@@ -4,52 +4,37 @@
 const posts = require('../models/posts');
 
 /**
- * add a new post into the database
+ * insert the post
  * @param {*} title 
  * @param {*} content 
  */
 function post(title, content){
-    posts.push({
-        id: posts.length+1,
-        href: "/post/"+(posts.length+1),
-        title: title,
-        content: content
-    });
+
+    posts.post(title, content);
 }
 /**
- * get all existing titles of the posts in the database
+ * get all Titles of the post
  * @param {*} titles an empty array to be added 
  */
 function getTitles(titles){
-    for (post of posts){
-        titles.push(post["title"]);
-    }
+    posts.getTitles(titles);
 }
 
 /**
- * get existing hrefs of posts in the database
+ * get all hrefs of the post
  * @param {} hrefs an empty array to be added
  */
 function getHrefs(hrefs){
-    for (post of posts){
-        hrefs.push(post["href"]);
-    }
+    posts.getHrefs(hrefs);
 }
 
 /**
- * get the title and content given a relative href
+ * get title, content and comments of an existing post
  * @param {*} href 
- * return a list of [title, content]
+ * return a list of [title, content, comments]
  */
 function getTitleAndContentAndComments(href){
-    for (post of posts){
-        if (href === post['href']){
-            title = post['title'];
-            content = post['content'];
-            comments = post['comments']
-            return [title,content, comments];
-        }
-    }
+    return posts.getTitleAndContentAndComments(href);
 }
 
 /**
@@ -57,7 +42,7 @@ function getTitleAndContentAndComments(href){
  * @return an array of posts
  */
 function getAllPosts(){
-    return posts;
+    return posts.getAllPosts();
 }
 
 
@@ -67,11 +52,7 @@ function getAllPosts(){
  * @param {*} res an empty array to be put
  */
 function getPostsByTag(tag, res){
-    for (post of posts) {
-        if (post['tags'].includes(tag)){
-            res.push(post);
-        }
-    }
+    posts.getPostsByTag(tag, res);
     return res;
 }
 
@@ -81,12 +62,7 @@ function getPostsByTag(tag, res){
  * @return post
  */
 function addComment(href, comment){
-    for (post of posts) {
-        if (post['href'] == href) {
-           post['comments'].push(comment);
-           return post; 
-        }
-    }
+    return (posts.addComment(href, comment));
 }
 module.exports = {getHrefs, getTitles, post, getTitleAndContentAndComments, getAllPosts,
                   getPostsByTag, addComment};

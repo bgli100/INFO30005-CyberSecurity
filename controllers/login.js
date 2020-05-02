@@ -10,13 +10,7 @@ var users = require("../models/userInfo");
  * @return true if user name exactly matches password
  */
 function checkUser(userName, pwd){
-    for (user of users){
-        if (user['userName'] == userName && user['password'] == pwd) {
-            return true;
-        }
-    }
-
-    return false;
+    return users.checkUser(userName, pwd);
 }
 
 /**
@@ -24,8 +18,6 @@ function checkUser(userName, pwd){
  * @param {} userNames an empty list to be added
  */
 function getUsers(userNames){
-    for (user of users) {
-        userNames.push(user["userName"]);
-    }
+    users.getUsers(userNames);
 }
 module.exports = {checkUser, getUsers};
