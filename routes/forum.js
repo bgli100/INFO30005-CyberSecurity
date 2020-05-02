@@ -21,7 +21,7 @@ router.get('/', function(req, res, next) {
     router.get('/writingpost', function(req, res, next) {
     //res.render('writingpost', { title: 'new post'});
 });
- */
+*/
 
 // handle posting page
 // needs to be in default or specify the content type as 

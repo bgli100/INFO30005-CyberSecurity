@@ -6,12 +6,7 @@ const posts = require('../models/posts');
  * @param {*} rating 
  */
 function updateRating(href, rating){
-    for (post of posts){
-        if (post['href'] == href){
-            post['rating'] += parseInt(rating);
-            return post['rating'];
-        }
-    }
+    return posts.updateRating(href, rating);
 }
 
 /**
@@ -19,11 +14,7 @@ function updateRating(href, rating){
  * @param {} res 
  */
 function sortPostByRating(res){
-    for (post of posts){
-        res.push(post);
-    }
-    res.sort((a,b)=> (a.rating > b.rating)?-1:1);
-    return res;
+    posts.sortPostByRating(res);
 }
 
 module.exports = {updateRating, sortPostByRating};
