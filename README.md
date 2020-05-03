@@ -9,7 +9,7 @@ Three key functionalities (all URLs are relative with implied protocols and doma
     1. forum page that can get all posts, use GET to go to /forum.
     2. post new post, use POST to go to /forum/posting and specify in the body, as in type of x-www-form-urlencoded, with the key value pair, title: value, content: value.
     3. access and read post, use GET to go to /forum/post/* (* here is a regex, initially can go to /1 and /2) and each new post will add by 1 (e.g. /post/3).
-    4. get certain posts by a tag. Use Post to go to /forum/tag and specify in the body, as in type of x-www-form-urlencoded, with the key value pair, tag : value.
+    4. get certain posts by a tag. Use Post to go to /forum/tag and specify in the body, as in type of x-www-form-urlencoded, with the key value pair, tag : value. (try tag : TCP)
     5. add a comment to a post. Use Post to go to /forum/comment and specify in the body, as in type of x-www-form-urlencoded, with the key value pair, path : value, comment: value.
     path is the relative path of the post (e.g. '/post/1'), comment is text. 
 3. Rating system
