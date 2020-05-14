@@ -17,5 +17,6 @@ router.put('/post/:postId/comment/:id/rating', ratingController.giveRating('comm
 
 router.put('/post/:id/comment', commentController.createComment);
 router.put('/post/:postId/comment/:id', commentController.updateComment);
+router.delete('/post/:postId/comment/:id', commentController.deleteComment);
 
 module.exports = router;

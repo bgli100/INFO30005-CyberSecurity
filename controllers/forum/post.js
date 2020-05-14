@@ -43,7 +43,6 @@ const updatePost = (req, res) => {
 };
 
 const deletePost = (req, res) => {
-    const id = req.params.id;
     Post.findById(req.params.id, (_err, doc) => {
         doc.remove();
         res.json({

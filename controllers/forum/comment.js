@@ -37,4 +37,13 @@ const updateComment = (req, res) => {
     });
 };
 
-module.exports = {updateComment, getComment, createComment};
+const deleteComment = (req, res) => {
+    Comment.findById(req.params.id, (_err, doc) => {
+        doc.remove();
+        res.json({
+            success: true
+        });
+    });
+};
+
+module.exports = {updateComment, getComment, createComment, deleteComment};
