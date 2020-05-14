@@ -15,6 +15,6 @@ mongoose.connect(uri, config,
     }
 );
 
-require('./post');
-require('./comment');
-require('./rating');
+require('./forum/post');
+require('./forum/comment');
+require('./forum/rating');

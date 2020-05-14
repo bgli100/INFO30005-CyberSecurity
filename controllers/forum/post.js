@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 const Post = mongoose.model('posts');
+const ObjectId = mongoose.mongo.ObjectId;
 
 const findAllPost = (_req, res) => {
     Post.find()
         .lean()
         .then((x) => {
             res.json(x);
-            console.log(x);
+            // console.log(x);
         });
 };
 
@@ -14,7 +15,7 @@ const createPost = (req, res) => {
     const item = {
         title: req.body.title,
         content: req.body.content,
-        user: mongoose.mongo.ObjectId(req.body.user)
+        user: ObjectId(req.body.user)
     };
 
     const data = new Post(item);
@@ -49,7 +50,7 @@ const deletePost = (req, res) => {
 const getPost = (req, res) => {
     const id = req.params.id;
     Post.findById(id, (err, doc) => {
-        if (err) {
+        if (err || !doc) {
             console.error('error, no post found');
         }
         res.json(doc);
