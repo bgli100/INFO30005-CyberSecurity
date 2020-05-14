@@ -1,68 +1,59 @@
-/**
- * post controller that handles all the posts in the forum
- */
-const posts = require('../models/posts');
+const mongoose = require('mongoose');
+const Post = mongoose.model('posts');
 
-/**
- * insert the post
- * @param {*} title 
- * @param {*} content 
- */
-function post(title, content){
+const findAllPost = (_req, res) => {
+    Post.find()
+        .lean()
+        .then((x) => {
+            res.json(x);
+            console.log(x);
+        });
+};
 
-    posts.post(title, content);
-}
-/**
- * get all Titles of the post
- * @param {*} titles an empty array to be added 
- */
-function getTitles(titles){
-    posts.getTitles(titles);
-}
+const createPost = (req, res) => {
+    const item = {
+        title: req.body.title,
+        content: req.body.content,
+        user: mongoose.mongo.ObjectId(req.body.user)
+    };
 
-/**
- * get all hrefs of the post
- * @param {} hrefs an empty array to be added
- */
-function getHrefs(hrefs){
-    posts.getHrefs(hrefs);
-}
+    const data = new Post(item);
+    data.save((_err, doc) => {
+        res.redirect('/forum/' + doc.id);
+    });
+};
 
-/**
- * get title, content and comments of an existing post
- * @param {*} href 
- * return a list of [title, content, comments]
- */
-function getTitleAndContentAndComments(href){
-    return posts.getTitleAndContentAndComments(href);
-}
+const updatePost = (req, res) => {
+    const id = req.params.id;
+    Post.findById(id, (err, doc) => {
+        if (err || !doc) {
+            console.error('error, no post found');
+            res.json({
+                error: 'no post found'
+            });
+            return;
+        }
+        doc.title = req.body.title;
+        doc.content = req.body.content;
+        doc.save();
+    });
+    res.redirect('/forum/post/' + id);
+};
 
-/**
- * get all post in the database
- * @return an array of posts
- */
-function getAllPosts(){
-    return posts.getAllPosts();
-}
+const deletePost = (req, res) => {
+    const id = req.params.id;
+    Post.findByIdAndRemove(id).exec();
+    res.redirect('/forum/');
+};
 
+const getPost = (req, res) => {
+    const id = req.params.id;
+    Post.findById(id, (err, doc) => {
+        if (err) {
+            console.error('error, no post found');
+        }
+        res.json(doc);
+    });
+};
 
-/**
- * get posts associated by certain tags
- * @param {*} tag 
- * @param {*} res an empty array to be put
- */
-function getPostsByTag(tag, res){
-    posts.getPostsByTag(tag, res);
-    return res;
-}
-
-/**
- * add comments to a post
- * @param {} href 
- * @return post
- */
-function addComment(href, comment){
-    return (posts.addComment(href, comment));
-}
-module.exports = {getHrefs, getTitles, post, getTitleAndContentAndComments, getAllPosts,
-                  getPostsByTag, addComment};
+module.exports = {findAllPost, createPost, updatePost, deletePost, getPost};

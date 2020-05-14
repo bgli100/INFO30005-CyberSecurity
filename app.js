@@ -4,6 +4,9 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+// connect to database
+require('./models/db');
+
 //set up the basic routes
 const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user');
@@ -22,11 +25,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 // use the middleware to go to each routes to do specific actions
 app.use('/', indexRouter);
 app.use('/user', userRouter);
-app.use('/forum',forumRouter);
+app.use('/forum', forumRouter);
 
 
 // catch 404 and forward to error handler
@@ -45,4 +47,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+app.listen(80);
