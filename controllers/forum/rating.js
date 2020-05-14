@@ -40,9 +40,7 @@ const giveRating = (type) => {
         }, {
             upsert: true // if not exist, insert one
         }, (_err, doc) => {
-            res.json({
-                success: true
-            });
+            res.json(doc);
         })
     }
 }

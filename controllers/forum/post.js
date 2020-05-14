@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Post = mongoose.model('posts');
 const ObjectId = mongoose.mongo.ObjectId;
+const commentController = require('./comment');
 
 const findAllPost = (_req, res) => {
     Post.find()
@@ -20,13 +21,12 @@ const createPost = (req, res) => {
 
     const data = new Post(item);
     data.save((_err, doc) => {
-        res.redirect('/forum/' + doc.id);
+        res.json(doc);
     });
 };
 
 const updatePost = (req, res) => {
-    const id = req.params.id;
-    Post.findById(id, (err, doc) => {
+    Post.findById(req.params.id, (err, doc) => {
         if (err || !doc) {
             console.error('error, no post found');
             res.json({
@@ -34,26 +34,35 @@ const updatePost = (req, res) => {
             });
             return;
         }
+        doc.lastEdit = Date.now();
         doc.title = req.body.title;
         doc.content = req.body.content;
         doc.save();
+        res.json(doc);
     });
-    res.redirect('/forum/post/' + id);
 };
 
 const deletePost = (req, res) => {
     const id = req.params.id;
-    Post.findByIdAndRemove(id).exec();
-    res.redirect('/forum/');
+    Post.findById(req.params.id, (_err, doc) => {
+        doc.remove();
+        res.json({
+            success: true
+        });
+    });
 };
 
 const getPost = (req, res) => {
     const id = req.params.id;
-    Post.findById(id, (err, doc) => {
+    Post.findById(id, async (err, doc) => {
         if (err || !doc) {
             console.error('error, no post found');
         }
-        res.json(doc);
+        commentController.getComment(id, (comment) => {
+            doc = doc.toObject();
+            doc.comment = comment ? comment : [];
+            res.json(doc);
+        });
     });
 };
 
