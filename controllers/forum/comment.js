@@ -6,7 +6,7 @@ const getComment = (postId, callback) => {
     return Comment.find({
         post: ObjectId(postId)
     }).lean().then(callback);
-}
+};
 
 const createComment = (req, res) => {
     const item = {

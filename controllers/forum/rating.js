@@ -23,8 +23,8 @@ const getRating = (type) => {
                 total: doc.total ? doc.total : 0
             });
         });
-    }
-}
+    };
+};
 
 const giveRating = (type) => {
     return (req, res) => {
@@ -41,8 +41,8 @@ const giveRating = (type) => {
             upsert: true // if not exist, insert one
         }, (_err, doc) => {
             res.json(doc);
-        })
-    }
-}
+        });
+    };
+};
 
 module.exports = {getRating, giveRating};
