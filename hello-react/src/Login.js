@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class Demo extends Component {
+class Login extends Component {
 
     constructor() {
         super();
