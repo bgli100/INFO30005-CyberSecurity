@@ -14,12 +14,17 @@ const SALT = "DADA";
 const verifyLogin = (req, res) => {
     let password = crypto.createHash("md5").update(req.body.password + SALT).digest('hex');
     User.findOne({userName: req.body.userName, password: password}, (err, doc) =>{
-        if (err) {
-            console.error("Error, no such user name registered");
+        if (err || !doc) {
+            console.error("Error, unmatched user name or password");
+            res.json({
+                error: 'unmatched user name or password'
+            });
+            return;
         }
         doc = doc.toObject();
-        res.cookie('_userID', doc.ObjectId, {
-            expires: new Date(Date.now() + 3600000)
+        res.cookie('_userID', doc._id, {
+            expires: new Date(Date.now() + 3600000),
+            encode: String
           }).json(doc);
     });
 };
@@ -30,9 +35,7 @@ const verifyLogin = (req, res) => {
  * @param {*} res 
  */
 const logout = (req, res) => {
-    res.clearCookie('_userID',{
-        expires: new Date(Date.now() + 3600000)
-      });
+    res.clearCookie('_userID',{Path : '/'});
 };
 
 /**
@@ -55,9 +58,10 @@ const signup = (req, res) => {
             });
             return;
         }
-        doc = doc.object();
-        res.cookie('_userID', doc.ObjectId, {
-            expires: new Date(Date.now() + 3600000)
+        doc = doc.toObject();
+        res.cookie('_userID',  doc._id, {
+            expires: new Date(Date.now() + 3600000),
+            encode: String
           }).json(doc);
     });
 };
@@ -93,7 +97,14 @@ const updateProfile = (req, res) => {
     const new_password = req.body.password;
     const new_email = req.body.email;
 
-    User.findByIdAndUpdate(ObjectId(id), (err, doc) =>{
+    if (id != req.params.id) {
+        console.error("userInfo unmatched");
+        res.json({
+            error: "user information unmatched"
+        });
+        return;
+    }
+    User.findById(ObjectId(id), (err, doc) =>{
         if (err || !doc) {
             console.error('error, authentication error');
             res.json({
@@ -110,15 +121,18 @@ const updateProfile = (req, res) => {
         if (new_email){
             doc.email = new_email;
         }
+        doc.save();
+        doc = doc.toObject();
+        res.json(doc);
     });
 };
 
 /**
- * get the posts and comments of a user
+ * get the posts by the user
  * @param {*} req 
  * @param {*} res 
  */
-const getActivities = (req, res) => {
+const getPostsByUser = (req, res) => {
     const id = req.params.id;
     User.findById(id, (err, doc) => {
         if (err || !doc) {
@@ -128,15 +142,44 @@ const getActivities = (req, res) => {
             });
             return;
         }
-        let posts = Post.find({user: ObjectId(id)}).lean();
-        let comments = Comment.find({user: ObjectId(id)}).lean();
-        let obj = {"posts": posts, "comments": comments};
-        res.json(obj);
+        Post.find({user: ObjectId(id)}, (_err, doc)=>{
+            if (!doc) {
+                res.json({});
+                return;
+            }
+        }).lean()
+          .then((x) =>{
+            res.json(x);
+        });
     });
 };
-
-
+/**
+ * get the comments made by the user
+ * @param {} req 
+ * @param {*} res 
+ */
+const getCommentsByUser = (req, res) => {
+    const id = req.params.id;
+    User.findById(id, (err, doc) => {
+        if (err || !doc) {
+            console.error('error, no user found');
+            res.json({
+                error: 'no user found'
+            });
+            return;
+        }
+        Comment.find({user: ObjectId(id)}, (_err, doc) =>{
+            if (!doc) {
+                res.json({});
+                return;
+            }
+        }).lean()
+          .then((x) =>{
+              res.json(x);
+          });
+    });
+};
 const getUserIDFromCookie = (req) => {
     return req.cookies._userID;
 }
-module.exports = {verifyLogin, signup, getProfile, updateProfile, getActivities, logout, getUserIDFromCookie};
+module.exports = {verifyLogin, signup, getProfile, updateProfile, getPostsByUser,getCommentsByUser, logout, getUserIDFromCookie};
