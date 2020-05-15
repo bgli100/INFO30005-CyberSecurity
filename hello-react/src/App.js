@@ -1,11 +1,11 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Demo from "./Demo";
+import Login from "./Login";
 
 function App() {
   return (
-    <div >
+    <div>
       <Login/>
     </div>
   );
