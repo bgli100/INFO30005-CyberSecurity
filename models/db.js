@@ -18,3 +18,5 @@ mongoose.connect(uri, config,
 require('./forum/post');
 require('./forum/comment');
 require('./forum/rating');
+
+require('./user/userInfo');
