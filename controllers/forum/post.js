@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Post = mongoose.model('posts');
 const ObjectId = mongoose.mongo.ObjectId;
 const commentController = require('./comment');
+const param = require('../../models/param');
 
 const findAllPost = (_req, res) => {
     Post.find()
@@ -13,6 +14,9 @@ const findAllPost = (_req, res) => {
 };
 
 const createPost = (req, res) => {
+    if(!param.validateBody(req, res, ['title', 'content'])) {
+        return;
+    }
     const item = {
         title: req.body.title,
         content: req.body.content,
@@ -26,9 +30,13 @@ const createPost = (req, res) => {
 };
 
 const updatePost = (req, res) => {
-    Post.findById(req.params.id, (err, doc) => {
+    const id = req.params.id;
+    if(!param.validateBody(req, res, ['title', 'content']) ||
+       !param.validateId(res, id)) {
+        return;
+    }
+    Post.findById(id, (err, doc) => {
         if (err || !doc) {
-            console.error('error, no post found');
             res.json({
                 error: 'no post found'
             });
@@ -43,7 +51,17 @@ const updatePost = (req, res) => {
 };
 
 const deletePost = (req, res) => {
-    Post.findById(req.params.id, (_err, doc) => {
+    const id = req.params.id;
+    if(!param.validateId(res, id)) {
+        return;
+    }
+    Post.findById(id, (err, doc) => {
+        if (err || !doc) {
+            res.json({
+                error: 'no post found'
+            });
+            return;
+        }
         doc.remove();
         res.json({
             success: true
@@ -53,9 +71,15 @@ const deletePost = (req, res) => {
 
 const getPost = (req, res) => {
     const id = req.params.id;
-    Post.findById(id, async (err, doc) => {
+    if(!param.validateId(res, id)) {
+        return;
+    }
+    Post.findById(id, (err, doc) => {
         if (err || !doc) {
-            console.error('error, no post found');
+            res.json({
+                error: 'no post found'
+            });
+            return;
         }
         commentController.getComment(id, (comment) => {
             doc = doc.toObject();

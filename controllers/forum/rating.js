@@ -1,25 +1,29 @@
 const mongoose = require('mongoose');
 const Rating = mongoose.model('ratings');
 const ObjectId = mongoose.mongo.ObjectId;
+const param = require('../../models/param');
 
 const getRating = (type) => {
     return (req, res) => {
-        console.log(req.params.id);
+        const id = req.params.id;
+        if(!param.validateId(res, id)) {
+            return;
+        }
         Rating.aggregate([{
-            $match: {
-                target: ObjectId(req.params.id),
+            $match: {  // where `target` = req.params.id and `type` = type
+                target: ObjectId(id),
                 type: type
             }
         }, {
-            $group: {
-                _id: ObjectId(req.params.id),
-                total: {
-                    $sum: "$value"
+            $group: { // group by req.params.id
+                _id: ObjectId(id),
+                total: { // select sum(`rating`)
+                    $sum: "$rating"
                 }
             }
         }], (_err, doc) => {
             res.json({
-                _id: req.params.id,
+                _id: id,
                 total: doc.total ? doc.total : 0
             });
         });
@@ -28,15 +32,20 @@ const getRating = (type) => {
 
 const giveRating = (type) => {
     return (req, res) => {
+        const id = req.params.id;
+        if(!param.validateBody(req, res, ['rating']) ||
+           !param.validateId(res, id)) {
+            return;
+        }
         Rating.updateOne({ // if exist, update one
-            target: ObjectId(req.params.id),
+            target: ObjectId(id),
             type: type,
             user: ObjectId(req.body.user)
         }, {
-            target: ObjectId(req.params.id),
+            target: ObjectId(id),
             type: type,
             user: ObjectId(req.body.user),
-            value: req.body.value
+            rating: req.body.rating
         }, {
             upsert: true // if not exist, insert one
         }, (_err, doc) => {

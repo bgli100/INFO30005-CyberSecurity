@@ -1,7 +1,14 @@
 const mongoose = require('mongoose');
 const Comment = mongoose.model('comments');
 const ObjectId = mongoose.mongo.ObjectId;
+const param = require('../../models/param');
 
+
+/**
+ * get comments under a post
+ * @param {String} postId id of post
+ * @param {*} callback callback that takes fetched value
+ */
 const getComment = (postId, callback) => {
     return Comment.find({
         post: ObjectId(postId)
@@ -9,10 +16,15 @@ const getComment = (postId, callback) => {
 };
 
 const createComment = (req, res) => {
+    const id = req.params.id;
+    if(!param.validateBody(req, res, ['content']) ||
+       !param.validateId(res, id)) {
+        return;
+    }
     const item = {
         content: req.body.content,
         user: ObjectId(req.body.user),
-        post: ObjectId(req.params.id)
+        post: ObjectId(id)
     };
 
     const data = new Comment(item);
@@ -22,9 +34,13 @@ const createComment = (req, res) => {
 };
 
 const updateComment = (req, res) => {
-    Comment.findById(req.params.id, (err, doc) => {
+    const id = req.params.id;
+    if(!param.validateBody(req, res, ['content']) ||
+       !param.validateId(res, id)) {
+        return;
+    }
+    Comment.findById(id, (err, doc) => {
         if (err || !doc) {
-            console.error('error, no comment found');
             res.json({
                 error: 'no comment found'
             });
@@ -38,7 +54,17 @@ const updateComment = (req, res) => {
 };
 
 const deleteComment = (req, res) => {
-    Comment.findById(req.params.id, (_err, doc) => {
+    const id = req.params.id;
+    if(!param.validateId(res, id)) {
+        return;
+    }
+    Comment.findById(id, (err, doc) => {
+        if (err || !doc) {
+            res.json({
+                error: 'no comment found'
+            });
+            return;
+        }
         doc.remove();
         res.json({
             success: true
