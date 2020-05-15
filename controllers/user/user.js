@@ -25,7 +25,7 @@ const verifyLogin = (req, res) => {
         res.cookie('_userID', doc._id, {
             expires: new Date(Date.now() + 3600000),
             encode: String
-          }).json(doc);
+        }).json(doc);
     });
 };
 
@@ -35,7 +35,10 @@ const verifyLogin = (req, res) => {
  * @param {*} res 
  */
 const logout = (req, res) => {
-    res.clearCookie('_userID',{Path : '/'});
+    res.clearCookie('_userID', {Path : '/'})
+    .json({
+        success: true
+    });
 };
 
 /**
