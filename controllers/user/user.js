@@ -18,8 +18,21 @@ const verifyLogin = (req, res) => {
             console.error("Error, no such user name registered");
         }
         doc = doc.toObject();
-        res.json(doc);
+        res.cookie('_userID', doc.ObjectId, {
+            expires: new Date(Date.now() + 3600000)
+          }).json(doc);
     });
+};
+
+/**
+ * clear the cookie on log out
+ * @param {} req 
+ * @param {*} res 
+ */
+const logout = (req, res) => {
+    res.clearCookie('_userID',{
+        expires: new Date(Date.now() + 3600000)
+      });
 };
 
 /**
@@ -43,7 +56,9 @@ const signup = (req, res) => {
             return;
         }
         doc = doc.object();
-        res.json(doc);
+        res.cookie('_userID', doc.ObjectId, {
+            expires: new Date(Date.now() + 3600000)
+          }).json(doc);
     });
 };
 
@@ -73,7 +88,7 @@ const getProfile = (req, res) => {
  * @param {*} res 
  */
 const updateProfile = (req, res) => {
-    const id = req.body.id;
+    const id = getUserIDFromCookie(req);
     const new_icon = req.body.icon;
     const new_password = req.body.password;
     const new_email = req.body.email;
@@ -120,4 +135,8 @@ const getActivities = (req, res) => {
     });
 };
 
-module.exports = {verifyLogin, signup, getProfile, updateProfile, getActivities};
+
+const getUserIDFromCookie = (req) => {
+    return req.cookies._userID;
+}
+module.exports = {verifyLogin, signup, getProfile, updateProfile, getActivities, logout, getUserIDFromCookie};
