@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Rating = mongoose.model('ratings');
 const ObjectId = mongoose.mongo.ObjectId;
 const param = require('../../models/param');
+const user = require('../user/user');
 
 const getRating = (type) => {
     return (req, res) => {
@@ -33,18 +34,20 @@ const getRating = (type) => {
 const giveRating = (type) => {
     return (req, res) => {
         const id = req.params.id;
+        const userId = user.getUserIDFromCookie(req, res);
         if(!param.validateBody(req, res, ['rating']) ||
-           !param.validateId(res, id)) {
+           !param.validateId(res, id) ||
+           !userId) {
             return;
         }
         Rating.updateOne({ // if exist, update one
             target: ObjectId(id),
             type: type,
-            user: ObjectId(req.body.user)
+            user: ObjectId(userId)
         }, {
             target: ObjectId(id),
             type: type,
-            user: ObjectId(req.body.user),
+            user: ObjectId(userId),
             rating: req.body.rating
         }, {
             upsert: true // if not exist, insert one

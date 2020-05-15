@@ -3,6 +3,7 @@ const Post = mongoose.model('posts');
 const ObjectId = mongoose.mongo.ObjectId;
 const commentController = require('./comment');
 const param = require('../../models/param');
+const user = require('../user/user');
 
 const findAllPost = (_req, res) => {
     Post.find()
@@ -14,13 +15,15 @@ const findAllPost = (_req, res) => {
 };
 
 const createPost = (req, res) => {
-    if(!param.validateBody(req, res, ['title', 'content'])) {
+    const userId = user.getUserIDFromCookie(req, res);
+    if(!param.validateBody(req, res, ['title', 'content']) ||
+       !userId) {
         return;
     }
     const item = {
         title: req.body.title,
         content: req.body.content,
-        user: ObjectId(req.body.user)
+        user: ObjectId(userId)
     };
 
     const data = new Post(item);
@@ -31,11 +34,16 @@ const createPost = (req, res) => {
 
 const updatePost = (req, res) => {
     const id = req.params.id;
+    const userId = user.getUserIDFromCookie(req, res);
     if(!param.validateBody(req, res, ['title', 'content']) ||
-       !param.validateId(res, id)) {
+       !param.validateId(res, id) ||
+       !userId) {
         return;
     }
-    Post.findById(id, (err, doc) => {
+    Post.find({
+        id: ObjectId(id),
+        user: ObjectId(userId)
+    }, (err, doc) => {
         if (err || !doc) {
             res.json({
                 error: 'no post found'
@@ -52,7 +60,8 @@ const updatePost = (req, res) => {
 
 const deletePost = (req, res) => {
     const id = req.params.id;
-    if(!param.validateId(res, id)) {
+    if(!param.validateId(res, id) ||
+       !user.getAdminIDFromCookie(req, res)) {
         return;
     }
     Post.findById(id, (err, doc) => {

@@ -5,6 +5,7 @@ const Comment = mongoose.model('comments');
 const Post = mongoose.model('posts');
 const crypto = require('crypto');
 const SALT = "DADA";
+const param = require('../../models/param');
 
 /**
  * authenticate a user log in
@@ -85,6 +86,7 @@ const getProfile = (req, res) => {
             return;
         }
         doc = doc.toObject();
+        // TODO: privacy
         res.json(doc);
     });
 };
@@ -95,12 +97,13 @@ const getProfile = (req, res) => {
  * @param {*} res 
  */
 const updateProfile = (req, res) => {
-    const id = getUserIDFromCookie(req);
+    const id = getUserIDFromCookie(req, res);
     const new_icon = req.body.icon;
     const new_password = req.body.password;
     const new_email = req.body.email;
-
-    if (id != req.params.id) {
+    if(!id) {
+        return;
+    } else if (id != req.params.id) {
         console.error("userInfo unmatched");
         res.json({
             error: "user information unmatched"
@@ -137,6 +140,9 @@ const updateProfile = (req, res) => {
  */
 const getPostsByUser = (req, res) => {
     const id = req.params.id;
+    if(!param.validateId(res, id)) {
+        return;
+    }
     User.findById(id, (err, doc) => {
         if (err || !doc) {
             console.error('error, no user found');
@@ -163,6 +169,9 @@ const getPostsByUser = (req, res) => {
  */
 const getCommentsByUser = (req, res) => {
     const id = req.params.id;
+    if(!param.validateId(res, id)) {
+        return;
+    }
     User.findById(id, (err, doc) => {
         if (err || !doc) {
             console.error('error, no user found');
@@ -182,7 +191,44 @@ const getCommentsByUser = (req, res) => {
           });
     });
 };
-const getUserIDFromCookie = (req) => {
-    return req.cookies._userID;
+
+const getUserIDFromCookie = async (req, res) => {
+    const id = req.cookies._userID;
+    if(!id || !param.validateId(res, id)) {
+        return false;
+    }
+
+    const result = await User.findById(id);
+
+    if(result && result._id) {
+        return result._id;
+    } else {
+        res.json({
+            error: 'user auth failed'
+        });
+        return false;
+    }
 }
-module.exports = {verifyLogin, signup, getProfile, updateProfile, getPostsByUser,getCommentsByUser, logout, getUserIDFromCookie};
+
+const getAdminIDFromCookie = async (req, res) => {
+    const id = req.cookies._userID;
+    if(!id || !param.validateId(res, id)) {
+        return false;
+    }
+
+    const result = await User.findOne({
+        id: ObjectId(id),
+        class: 'admin'
+    });
+
+    if(result && result._id) {
+        return result._id;
+    } else {
+        res.json({
+            error: 'admin auth failed'
+        });
+        return false;
+    }
+}
+
+module.exports = {verifyLogin, signup, getProfile, updateProfile, getPostsByUser,getCommentsByUser, logout, getUserIDFromCookie, getAdminIDFromCookie};

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Comment = mongoose.model('comments');
 const ObjectId = mongoose.mongo.ObjectId;
 const param = require('../../models/param');
+const user = require('../user/user');
 
 
 /**
@@ -17,13 +18,15 @@ const getComment = (postId, callback) => {
 
 const createComment = (req, res) => {
     const id = req.params.id;
+    const userId = user.getUserIDFromCookie(req, res);
     if(!param.validateBody(req, res, ['content']) ||
-       !param.validateId(res, id)) {
+       !param.validateId(res, id) ||
+       !userId) {
         return;
     }
     const item = {
         content: req.body.content,
-        user: ObjectId(req.body.user),
+        user: ObjectId(userId),
         post: ObjectId(id)
     };
 
@@ -35,11 +38,16 @@ const createComment = (req, res) => {
 
 const updateComment = (req, res) => {
     const id = req.params.id;
+    const userId = user.getUserIDFromCookie(req, res);
     if(!param.validateBody(req, res, ['content']) ||
-       !param.validateId(res, id)) {
+       !param.validateId(res, id) ||
+       !userId) {
         return;
     }
-    Comment.findById(id, (err, doc) => {
+    Comment.find({
+        id: ObjectId(id),
+        user: ObjectId(userId)
+    }, (err, doc) => {
         if (err || !doc) {
             res.json({
                 error: 'no comment found'
@@ -55,7 +63,8 @@ const updateComment = (req, res) => {
 
 const deleteComment = (req, res) => {
     const id = req.params.id;
-    if(!param.validateId(res, id)) {
+    if(!param.validateId(res, id) ||
+       !user.getAdminIDFromCookie(req, res)) {
         return;
     }
     Comment.findById(id, (err, doc) => {
