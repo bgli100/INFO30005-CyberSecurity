@@ -8,6 +8,16 @@ const SALT = "DADA";
 const param = require('../../models/param');
 
 /**
+ * server user entry page
+ * @param {} req 
+ * @param {*} res 
+ */
+const indexPage = (req,res) => {
+    res.render('user');
+}
+
+
+/**
  * authenticate a user log in
  * @param {} req 
  * @param {*} res 
@@ -275,4 +285,4 @@ const getAdminIDFromCookie = async (req, res) => {
     }
 }
 
-module.exports = {verifyLogin, signup, getProfile, updateProfile, getPostsByUser,getCommentsByUser, logout, getUserIDFromCookie, getAdminIDFromCookie};
+module.exports = {indexPage, verifyLogin, signup, getProfile, updateProfile, getPostsByUser,getCommentsByUser, logout, getUserIDFromCookie, getAdminIDFromCookie};
