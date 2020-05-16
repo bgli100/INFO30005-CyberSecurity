@@ -36,25 +36,28 @@ const verifyLogin = (req, res) => {
  * @param {*} res 
  */
 const logout = (req, res) => {
-    const id_cookie = getUserIDFromCookie(req, res);
     const id = req.params.id;
-
-    // verification of user infomation
     if(!param.validateId(res, id)) {
         return;
-    } else if (!id_cookie) {
-        console.error("Error, you have not logged in");
-        res.json({
-            error: "you have not logged in"
-        });
-        return;
-    } else if (id != id_cookie){
-        console.error("userInfo unmatched");
-        res.json({
-            error: "user information unmatched"
-        });
-        return;
     }
+    // verification of user infomation
+    let hasError = getUserIDFromCookie(req, res).then((id_cookie)=>{
+        if (!id_cookie) {
+            console.error("Error, you have not logged in");
+            res.json({
+                error: "you have not logged in"
+            });
+            return true;
+        } else if (id != id_cookie){
+            console.error("userInfo unmatched");
+            res.json({
+                error: "user information unmatched"
+            });
+            return true;
+        }
+        return false;
+    });
+    if (hasError) return;
     res.clearCookie('_userID', {Path : '/'})
     .json({
         success: true
@@ -109,12 +112,13 @@ const getProfile = (req, res) => {
         }
         doc = doc.toObject();
         // privacy
-        const id_cookie = getUserIDFromCookie(req, res);
-        if (!id_cookie || id != id_cookie){
-            doc.email = "";
-        }
-        doc.password = "";
-        res.json(doc);
+        getUserIDFromCookie(req, res).then((id_cookie)=>{
+            if (!id_cookie || id != id_cookie){
+                doc.email = "";
+            }
+            doc.password = "";
+            res.json(doc);
+        });
     });
 };
 
@@ -124,26 +128,32 @@ const getProfile = (req, res) => {
  * @param {*} res 
  */
 const updateProfile = (req, res) => {
-    const id = getUserIDFromCookie(req, res);
     const new_icon = req.body.icon;
     const new_password = req.body.password;
     const new_email = req.body.email;
 
-    if(!id) {
-        console.error("Error, you have not logged in");
-        res.json({
-            error: "you have not logged in"
-        });
-        return;
-    } else if (!param.validateId(res,req.params.id)){
-        return;
-    } else if (id != req.params.id) {
-        console.error("userInfo unmatched");
-        res.json({
-            error: "user information unmatched"
-        });
+    if (!param.validateId(res,req.params.id)){
         return;
     }
+    let hasError = getUserIDFromCookie(req, res).then((id)=>{
+        if(!id) {
+            console.error("Error, you have not logged in");
+            res.json({
+                error: "you have not logged in"
+            });
+            return true;
+        } else if (id != req.params.id) {
+            console.error("userInfo unmatched");
+            res.json({
+                error: "user information unmatched"
+            });
+            return true;
+        }
+    });
+
+    if (hasError) return;
+
+    const id = req.params.id;
     User.findById(ObjectId(id), (err, doc) =>{
         if (err || !doc) {
             console.error('error, authentication error');
