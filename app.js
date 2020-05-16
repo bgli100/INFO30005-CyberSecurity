@@ -47,4 +47,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(80);
+app.listen(process.env.PORT || 80);
