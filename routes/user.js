@@ -2,7 +2,10 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user/user');
 
+//renderPages 
+router.get('/', userController.indexPage);
 
+//RestfulAPI
 router.put('/', userController.verifyLogin);
 router.put('/signup', userController.signup);
 router.get('/:id', userController.getProfile);
