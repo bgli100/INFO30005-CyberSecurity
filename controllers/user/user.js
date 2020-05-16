@@ -36,6 +36,25 @@ const verifyLogin = (req, res) => {
  * @param {*} res 
  */
 const logout = (req, res) => {
+    const id_cookie = getUserIDFromCookie(req, res);
+    const id = req.params.id;
+
+    // verification of user infomation
+    if(!param.validateId(res, id)) {
+        return;
+    } else if (!id_cookie) {
+        console.error("Error, you have not logged in");
+        res.json({
+            error: "you have not logged in"
+        });
+        return;
+    } else if (id != id_cookie){
+        console.error("userInfo unmatched");
+        res.json({
+            error: "user information unmatched"
+        });
+        return;
+    }
     res.clearCookie('_userID', {Path : '/'})
     .json({
         success: true
@@ -77,6 +96,9 @@ const signup = (req, res) => {
  */
 const getProfile = (req, res) => {
     const id = req.params.id;
+    if(!param.validateId(res, id)) {
+        return;
+    }
     User.findById(id, (err, doc) => {
         if (err || !doc) {
             console.error('error, no user found');
@@ -86,7 +108,12 @@ const getProfile = (req, res) => {
             return;
         }
         doc = doc.toObject();
-        // TODO: privacy
+        // privacy
+        const id_cookie = getUserIDFromCookie(req, res);
+        if (!id_cookie || id != id_cookie){
+            doc.email = "";
+        }
+        doc.password = "";
         res.json(doc);
     });
 };
@@ -101,7 +128,14 @@ const updateProfile = (req, res) => {
     const new_icon = req.body.icon;
     const new_password = req.body.password;
     const new_email = req.body.email;
+
     if(!id) {
+        console.error("Error, you have not logged in");
+        res.json({
+            error: "you have not logged in"
+        });
+        return;
+    } else if (!param.validateId(res,req.params.id)){
         return;
     } else if (id != req.params.id) {
         console.error("userInfo unmatched");
