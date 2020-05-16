@@ -36,28 +36,28 @@ const verifyLogin = (req, res) => {
  * @param {*} res 
  */
 const logout = (req, res) => {
-    const id = req.params.id;
-    if(!param.validateId(res, id)) {
-        return;
-    }
-    // verification of user infomation
-    let hasError = getUserIDFromCookie(req, res).then((id_cookie)=>{
-        if (!id_cookie) {
-            console.error("Error, you have not logged in");
-            res.json({
-                error: "you have not logged in"
-            });
-            return true;
-        } else if (id != id_cookie){
-            console.error("userInfo unmatched");
-            res.json({
-                error: "user information unmatched"
-            });
-            return true;
-        }
-        return false;
-    });
-    if (hasError) return;
+    // const id = req.params.id;
+    // if(!param.validateId(res, id)) {
+    //     return;
+    // }
+    // // verification of user infomation
+    // let hasError = getUserIDFromCookie(req, res).then((id_cookie)=>{
+    //     if (!id_cookie) {
+    //         console.error("Error, you have not logged in");
+    //         res.json({
+    //             error: "you have not logged in"
+    //         });
+    //         return true;
+    //     } else if (id != id_cookie){
+    //         console.error("userInfo unmatched");
+    //         res.json({
+    //             error: "user information unmatched"
+    //         });
+    //         return true;
+    //     }
+    //     return false;
+    // });
+    // if (hasError) return;
     res.clearCookie('_userID', {Path : '/'})
     .json({
         success: true
@@ -112,7 +112,7 @@ const getProfile = (req, res) => {
         }
         doc = doc.toObject();
         // privacy
-        getUserIDFromCookie(req, res).then((id_cookie)=>{
+        getUserIDFromCookie(req, res, true).then((id_cookie)=>{
             if (!id_cookie || id != id_cookie){
                 doc.email = "";
             }
@@ -135,7 +135,7 @@ const updateProfile = (req, res) => {
     if (!param.validateId(res,req.params.id)){
         return;
     }
-    let hasError = getUserIDFromCookie(req, res).then((id)=>{
+    let hasError = getUserIDFromCookie(req, res, true).then((id)=>{
         if(!id) {
             console.error("Error, you have not logged in");
             res.json({
@@ -236,9 +236,9 @@ const getCommentsByUser = (req, res) => {
     });
 };
 
-const getUserIDFromCookie = async (req, res) => {
+const getUserIDFromCookie = async (req, res, silent = false) => {
     const id = req.cookies._userID;
-    if(!id || !param.validateId(res, id)) {
+    if(!id || !param.validateId(res, id, silent)) {
         return false;
     }
 
