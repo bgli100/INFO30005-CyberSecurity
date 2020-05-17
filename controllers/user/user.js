@@ -12,8 +12,9 @@ const param = require('../../models/param');
  * @param {} req 
  * @param {*} res 
  */
-const indexPage = (req,res) => {
-    res.render('user');
+const indexPage = (req, res) => {
+    let isLogin = req.cookie['_userID']? false : true
+    res.render('user', { is_login: isLogin });
 }
 
 
@@ -24,7 +25,7 @@ const indexPage = (req,res) => {
  */
 const verifyLogin = (req, res) => {
     let password = crypto.createHash("md5").update(req.body.password + SALT).digest('hex');
-    User.findOne({userName: req.body.userName, password: password}, (err, doc) =>{
+    User.findOne({ userName: req.body.userName, password: password }, (err, doc) => {
         if (err || !doc) {
             console.error("Error, unmatched user name or password");
             res.json({
@@ -46,10 +47,10 @@ const verifyLogin = (req, res) => {
  * @param {*} res 
  */
 const logout = (req, res) => {
-    res.clearCookie('_userID', {Path : '/'})
-    .json({
-        success: true
-    });
+    res.clearCookie('_userID', { Path: '/' })
+        .json({
+            success: true
+        });
 };
 
 /**
@@ -65,7 +66,7 @@ const signup = (req, res) => {
     };
     const data = new User(newUser);
     data.save((err, doc) => {
-        if (err || !doc){
+        if (err || !doc) {
             console.error("Error, used user name");
             res.json({
                 error: 'used user name'
@@ -73,10 +74,10 @@ const signup = (req, res) => {
             return;
         }
         doc = doc.toObject();
-        res.cookie('_userID',  doc._id, {
+        res.cookie('_userID', doc._id, {
             expires: new Date(Date.now() + 3600000),
             encode: String
-          }).json(doc);
+        }).json(doc);
     });
 };
 
@@ -111,7 +112,7 @@ const updateProfile = (req, res) => {
     const new_icon = req.body.icon;
     const new_password = req.body.password;
     const new_email = req.body.email;
-    if(!id) {
+    if (!id) {
         return;
     } else if (id != req.params.id) {
         console.error("userInfo unmatched");
@@ -120,7 +121,7 @@ const updateProfile = (req, res) => {
         });
         return;
     }
-    User.findById(ObjectId(id), (err, doc) =>{
+    User.findById(ObjectId(id), (err, doc) => {
         if (err || !doc) {
             console.error('error, authentication error');
             res.json({
@@ -128,13 +129,13 @@ const updateProfile = (req, res) => {
             });
             return;
         }
-        if (new_icon){
+        if (new_icon) {
             doc.icon = new_icon;
         }
-        if (new_password){
+        if (new_password) {
             doc.password = crypto.createHash("md5").update(new_password + SALT).digest('hex');
         }
-        if (new_email){
+        if (new_email) {
             doc.email = new_email;
         }
         doc.save();
@@ -150,7 +151,7 @@ const updateProfile = (req, res) => {
  */
 const getPostsByUser = (req, res) => {
     const id = req.params.id;
-    if(!param.validateId(res, id)) {
+    if (!param.validateId(res, id)) {
         return;
     }
     User.findById(id, (err, doc) => {
@@ -161,15 +162,15 @@ const getPostsByUser = (req, res) => {
             });
             return;
         }
-        Post.find({user: ObjectId(id)}, (_err, doc)=>{
+        Post.find({ user: ObjectId(id) }, (_err, doc) => {
             if (!doc) {
                 res.json({});
                 return;
             }
         }).lean()
-          .then((x) =>{
-            res.json(x);
-        });
+            .then((x) => {
+                res.json(x);
+            });
     });
 };
 /**
@@ -179,7 +180,7 @@ const getPostsByUser = (req, res) => {
  */
 const getCommentsByUser = (req, res) => {
     const id = req.params.id;
-    if(!param.validateId(res, id)) {
+    if (!param.validateId(res, id)) {
         return;
     }
     User.findById(id, (err, doc) => {
@@ -190,27 +191,27 @@ const getCommentsByUser = (req, res) => {
             });
             return;
         }
-        Comment.find({user: ObjectId(id)}, (_err, doc) =>{
+        Comment.find({ user: ObjectId(id) }, (_err, doc) => {
             if (!doc) {
                 res.json({});
                 return;
             }
         }).lean()
-          .then((x) =>{
-              res.json(x);
-          });
+            .then((x) => {
+                res.json(x);
+            });
     });
 };
 
 const getUserIDFromCookie = async (req, res) => {
     const id = req.cookies._userID;
-    if(!id || !param.validateId(res, id)) {
+    if (!id || !param.validateId(res, id)) {
         return false;
     }
 
     const result = await User.findById(id);
 
-    if(result && result._id) {
+    if (result && result._id) {
         return result._id;
     } else {
         res.json({
@@ -222,7 +223,7 @@ const getUserIDFromCookie = async (req, res) => {
 
 const getAdminIDFromCookie = async (req, res) => {
     const id = req.cookies._userID;
-    if(!id || !param.validateId(res, id)) {
+    if (!id || !param.validateId(res, id)) {
         return false;
     }
 
@@ -231,7 +232,7 @@ const getAdminIDFromCookie = async (req, res) => {
         class: 'admin'
     });
 
-    if(result && result._id) {
+    if (result && result._id) {
         return result._id;
     } else {
         res.json({
@@ -241,4 +242,4 @@ const getAdminIDFromCookie = async (req, res) => {
     }
 }
 
-module.exports = {indexPage, verifyLogin, signup, getProfile, updateProfile, getPostsByUser,getCommentsByUser, logout, getUserIDFromCookie, getAdminIDFromCookie};
+module.exports = { indexPage, verifyLogin, signup, getProfile, updateProfile, getPostsByUser, getCommentsByUser, logout, getUserIDFromCookie, getAdminIDFromCookie };

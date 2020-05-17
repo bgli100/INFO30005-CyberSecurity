@@ -175,9 +175,9 @@ const subPageMap = {
 class App extends React.Component {
   state = {
     activeIndex: 0,
+    userName:"Jack",
     profile: {
-      userName: "Emma",
-      description: "Very Fancy",
+      description: "",
       password: "",
       email: "",
     },
@@ -199,7 +199,6 @@ class App extends React.Component {
    * @description getComments
    */
   getComments = (id) => {
-    console.log(account, password);
     $.ajax({
       url: "/user?id=" + id,
       method: "GET",
@@ -215,7 +214,6 @@ class App extends React.Component {
    * @description getProfile
    */
   getProfile = (id) => {
-    console.log(account, password);
     $.ajax({
       url: "/user",
       method: "GET",
@@ -274,7 +272,7 @@ class App extends React.Component {
                   </div>
                   <div class="col ml-n3 ml-md-n2">
                     {/* <!-- Title --> */}
-                    <h2 class="mb-0">{this.state.profile.userName}</h2>
+                    <h2 class="mb-0">{this.state.userName}</h2>
                     {/* <!-- Subtitle --> */}
                     <span class="text-muted d-block">
                       {this.state.profile.description}
