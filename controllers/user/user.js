@@ -13,7 +13,8 @@ const param = require('../../models/param');
  * @param {*} res 
  */
 const indexPage = (req, res) => {
-    res.render('user');
+    let isLogin = getUserIDFromCookie(req, res, true) != false;
+    res.render('user', { is_login: isLogin });
 }
 
 

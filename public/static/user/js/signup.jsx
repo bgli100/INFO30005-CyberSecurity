@@ -63,8 +63,12 @@ class App extends React.Component {
         email
       },
     }).then((res) => {
-      //TODO
-      // location.hash = "";
+      if(res && !res.error) {
+        this.toast({
+          type: "success",
+          message: "Sign Up Succeed!",
+        });
+      }
     });
   };
 

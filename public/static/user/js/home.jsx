@@ -221,7 +221,6 @@ class App extends React.Component {
       method: "GET",
       data: { id },
     }).then((res) => {
-      //TODO
       // this.setState({
       // profile:res.data,
       // description:rÎes.data

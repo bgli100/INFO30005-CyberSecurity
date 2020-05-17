@@ -52,9 +52,15 @@ class App extends React.Component {
         password,
       },
     }).then((res) => {
-      //TODO
-    // location.hash = "home";
-
+      console.log(res && !res.error);
+      if(res && !res.error) {
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(1)').hide();
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(2)').show();
+        this.toast({
+          type: "success",
+          message: "Sign In Succeed!",
+        });
+      }
     });
   };
 

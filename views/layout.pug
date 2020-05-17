@@ -49,7 +49,7 @@ html
                         a.btn.btn-sm.btn-primary.btn-icon.ml-3(href='/user#' target='_blank')
                             span.btn-inner--text Sign In
                     li.nav-item
-                        a.nav-link(href='#')
+                        a.nav-link(href='#', onclick='javascript:document.cookie="_userID=";$("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();$("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();')
                             | Sign Out
 
 
