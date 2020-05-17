@@ -13,6 +13,16 @@ html
         script(src='assets/js/react.min.js')
         script(src='assets/js/react-dom.min.js')
         script(src='assets/js/babel.min.js')
+        script.
+          function logOut(){
+          $.ajax({
+          url:'/user/' + id + '/logout',
+          success:function(){
+          location.hash = "";
+          location.reload();
+          }
+          })
+          }
         style.
             #header-main{
                 display:block;
@@ -45,12 +55,13 @@ html
                 // Right navigation
                 ul.navbar-nav.align-items-lg-center.d-none.d-lg-flex.ml-lg-auto
                     // Auth
-                    li.nav-item
-                        a.btn.btn-sm.btn-primary.btn-icon.ml-3(href='/user#' target='_blank')
-                            span.btn-inner--text Sign In
-                    li.nav-item
-                        a.nav-link(href='#')
-                            | Sign Out
+                    if is_login
+                        li.nav-item
+                            a.btn.btn-sm.btn-primary.btn-icon.ml-3(href='/user#' target='_blank')
+                                span.btn-inner--text Sign In
+                    else
+                        li.nav-item
+                        a.nav-link(href='#', onclick='logOut()') Sign Out
 
 
 block content
