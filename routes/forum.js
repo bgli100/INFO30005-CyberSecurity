@@ -3,8 +3,12 @@ const router = express.Router();
 const postController = require('../controllers/forum/post');
 const ratingController = require('../controllers/forum/rating');
 const commentController = require('../controllers/forum/comment');
+const indexController = require('../controllers/forum/index');
 
-router.get('/', postController.findAllPost);
+//renderPages 
+router.get('/', indexController.indexPage);
+
+router.get('/all', postController.findAllPost);
 router.put('/post', postController.createPost);
 router.delete('/post/:id', postController.deletePost);
 router.get('/post/:id', postController.getPost);

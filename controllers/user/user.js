@@ -12,7 +12,7 @@ const param = require('../../models/param');
  * @param {} req 
  * @param {*} res 
  */
-const indexPage = (req,res) => {
+const indexPage = (req, res) => {
     res.render('user');
 }
 
@@ -24,7 +24,7 @@ const indexPage = (req,res) => {
  */
 const verifyLogin = (req, res) => {
     let password = crypto.createHash("md5").update(req.body.password + SALT).digest('hex');
-    User.findOne({userName: req.body.userName, password: password}, (err, doc) =>{
+    User.findOne({userName: req.body.account, password: password}, (err, doc) =>{
         if (err || !doc) {
             console.error("Error, unmatched user name or password");
             res.json({
