@@ -1,66 +1,76 @@
 class App extends React.Component {
   state = {
-    account: "",
+    userName: "",
     password: "",
+    email: ""
   };
   toast = ({ type = "success", message = "", duration = 1000 }) => {
     let caseMap = {
       error: ({ type, message }) => (
-          <div className="alert alert-danger" role="alert">
-            <strong>{message}</strong>
-          </div>
+        <div className="alert alert-danger" role="alert">
+          <strong>{message}</strong>
+        </div>
       ),
       success: ({ type, message }) => (
-          <div className="alert alert-success" role="alert">
-            <strong>{message}</strong>
-          </div>
+        <div className="alert alert-success" role="alert">
+          <strong>{message}</strong>
+        </div>
       ),
     };
-    let modalToast = document.createElement('div')
-    document.body.appendChild(modalToast)
-    ReactDOM.render(caseMap[type]({type, message}),modalToast);
+    let modalToast = document.createElement("div");
+    document.body.appendChild(modalToast);
+    ReactDOM.render(caseMap[type]({ type, message }), modalToast);
     setTimeout(() => {
-        modalToast.remove()
+      modalToast.remove();
     }, duration);
   };
   /**
    * @description signIn
    */
-  signIn = () => {
-    let { account, password } = this.state;
-    if(!account ){
-        this.toast({
-            type:'error',
-            message:'Please input correct account!'
-        })
-        return
+  signUp = () => {
+    let { userName, password, email } = this.state;
+    if (!userName) {
+      this.toast({
+        type: "error",
+        message: "Please input correct username!",
+      });
+      return;
     }
 
-    if(!password ){
-        this.toast({
-            type:'error',
-            message:'Please input correct password!'
-        })
-        return
+    if (!password) {
+      this.toast({
+        type: "error",
+        message: "Please input correct password!",
+      });
+      return;
     }
-    console.log(account, password);
+    
+    const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+    if (!email || !emailReg.test(email)) {
+      this.toast({
+        type: "error",
+        message: "Please input correct email!",
+      });
+      return;
+    }
+
     $.ajax({
-      url: "/user",
+      url: "/user/signup",
       method: "PUT",
       data: {
-        account,
+        userName,
         password,
+        email
       },
     }).then((res) => {
       //TODO
-    // location.hash = "home";
-
+      // location.hash = "";
     });
   };
 
   render() {
     return (
-      <div id="userLogin">
+      <div>
         {/* toast */}
 
         <div className="container d-flex flex-column">
@@ -68,24 +78,24 @@ class App extends React.Component {
             <div className="col-md-6 col-lg-5 col-xl-4 py-6 py-md-0">
               <div>
                 <div className="mb-5 text-center">
-                  <h6 className="h3 mb-1">Login</h6>
+                  <h6 className="h3 mb-1">SignUp</h6>
                   <p className="text-muted mb-0">
-                    Sign in to your account to continue.
+                    Sign up to your account to continue.
                   </p>
                 </div>
                 <span className="clearfix"></span>
                 <form>
                   <div className="form-group">
-                    <label className="form-control-label">Account</label>
+                    <label className="form-control-label">Username</label>
                     <div className="input-group input-group-merge">
                       <input
                         className="form-control form-control-prepend"
                         id="input-email"
                         type="text"
-                        placeholder="your account"
+                        placeholder="your username"
                         onChange={(e) => {
                           this.setState({
-                            account: e.target.value,
+                            userName: e.target.value,
                           });
                         }}
                       />
@@ -121,23 +131,38 @@ class App extends React.Component {
                       </div>
                     </div>
                   </div>
+                  <div className="form-group">
+                    <label className="form-control-label">Email address</label>
+                    <div className="input-group input-group-merge">
+                      <input
+                        className="form-control form-control-prepend"
+                        id="input-email"
+                        type="email"
+                        placeholder="your email"
+                        onChange={(e) => {
+                          this.setState({
+                            email: e.target.value,
+                          });
+                        }}
+                      />
+                      <div className="input-group-prepend">
+                        <span className="input-group-text">
+                          <i data-feather="user"></i>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                   <div className="mt-4">
                     <button
                       className="btn btn-block btn-primary"
                       type="button"
-                      onClick={() => this.signIn()}
+                      onClick={() => this.signUp()}
                     >
-                      Sign in
+                      Sign up
                     </button>
                   </div>
                 </form>
                 <div className="py-3 text-center"></div>
-                <div className="mt-4 text-center">
-                  <small>Not registered?</small>
-                  <a className="small font-weight-bold" href="#signup">
-                    Create account
-                  </a>
-                </div>
               </div>
             </div>
           </div>
