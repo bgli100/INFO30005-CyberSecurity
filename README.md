@@ -1,4 +1,10 @@
 # web-info-tech
+Testing: we have 2 pre-defined user for test purpose.
+
+`user` with password `user` is a normal user.
+
+`admin` with password `admin` is an admin.
+
 Three key functionalities (all URLs are relative with implied protocols and domain names)
 1. User management
     1. user page that can get all users, use GET request to go to /user
