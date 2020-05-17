@@ -2,7 +2,8 @@
 //ES5 only whitout BABEL
 var routes = {
     ['']: 'static/user/js/login.jsx',
-    ['home']: 'static/user/js/home.jsx'
+    ['home']: 'static/user/js/home.jsx',
+    ['signup']: 'static/user/js/signup.jsx'
 };
 ; (function () {
         $(document).ready(ready)
@@ -20,6 +21,10 @@ var routes = {
             }
             function onHashchange() {
                 let hash = this.location.hash.replace('#', '');
+                //fix bugs
+                if(!routes[hash]){
+                    return
+                }
                 injectJS(hash);
             }
             window.addEventListener('hashchange', onHashchange)
