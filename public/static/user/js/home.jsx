@@ -103,9 +103,9 @@ const Form = {
   ),
 };
 
-const navItemList = ["Home", "Profile"];
+var navItemList = ["Profile", "Update"];
 const subPageMap = {
-  Home: (context) => (
+  Profile: (context) => (
     <div className="container">
       <div class="card-header">
         <h6>About Me</h6>
@@ -137,7 +137,7 @@ const subPageMap = {
       ))}
     </div>
   ),
-  Profile: (context) => (
+  Update: (context) => (
     <div>
       {Object.keys(context.state.profile).map((item, index) => {
         return (
@@ -177,7 +177,7 @@ class App extends React.Component {
     activeIndex: 0,
     profile: {
       userName: "",
-      description: "Very Fancy",
+      description: "",
       password: "",
       email: "",
     },
@@ -192,7 +192,7 @@ class App extends React.Component {
         createTime: "",
         content: "",
       },
-    ],
+    ]
   };
   /**
    * @description getComments
@@ -220,6 +220,7 @@ class App extends React.Component {
       });
     });
   };
+
   /**
    * @description getProfile
    */
@@ -228,33 +229,34 @@ class App extends React.Component {
       url: "/user/" + id,
       method: "GET",
     }).then((res) => {
+      let des = res.description?res.description:"This user has not set up any description";
       this.setState({
         profile: {
           userName: res.userName,
-          description: "Very Fancy",
+          description: des,
           email: res.email,
         }
       });
     });
   };
+
   /**
    * @description updateProfile
    */
-  updateProfile = (id) => {
-    let {
-      userName = "",
-      password = "",
-      email = "",
-      icon = "",
-    } = this.state.profile;
+  updateProfile = () => {
+    let id = 0;
+    $.ajax({
+      url: "/user/checkcookie",
+      mehtod: "GET"
+    }).then((res) => {
+      id = res._id;
+    });
     $.ajax({
       url: "/user?id=" + id,
       method: "POST",
       data: {
-        userName,
         password,
         email,
-        class: this.state.profile.class,
         icon,
       },
     }).then((res) => {
@@ -262,9 +264,46 @@ class App extends React.Component {
     });
   };
 
+  setNavItemList = (id)=>{
+    $.ajax({
+      url: "/user/checkcookie",
+      mehtod: "GET"
+    }).then((res) => {
+      if (!res || res.error){
+        navItemList = ["Profile"];
+      }
+      else if (res._id != id){
+        navItemList = ["Profile"];
+      }
+      });
+    }
+  
+  // hide the sign in/ sign out bar and the home link
+  signInStatus = ()=> {
+    $.ajax({
+      url: "/user/checkcookie",
+      mehtod: "GET"
+    }).then((res) => {
+      if (res && !res.error){
+        this.setState({
+          cookie_id: res._id 
+        });
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(1)').hide();
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(2)').show();
+        $('#navbar-main-collapse>ul.mx-auto>li:nth-child(2)').show();
+      }
+      else{
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(1)').show();
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(2)').hide();
+        $('#navbar-main-collapse>ul.mx-auto>li:nth-child(2)').hide();
+      }
+    })
+  }
   componentDidMount() {
+    this.signInStatus();
     this.getProfile("5ec0d460847e415d8c857c4e");
     this.getComments("5ec0d460847e415d8c857c4e");
+    this.setNavItemList("5ec0d460847e415d8c857c4e");
   }
   render() {
     return (
