@@ -63,7 +63,13 @@ class App extends React.Component {
         email
       },
     }).then((res) => {
-      if(res && !res.error) {
+      if (res.error) {
+        this.toast({
+          type: "error",
+          message: "used user name",
+        });
+      }
+      else if(res) {
         this.toast({
           type: "success",
           message: "Sign Up Succeed!",

@@ -176,7 +176,7 @@ class App extends React.Component {
   state = {
     activeIndex: 0,
     profile: {
-      userName: "Emma",
+      userName: "",
       description: "Very Fancy",
       password: "",
       email: "",
@@ -189,9 +189,8 @@ class App extends React.Component {
     commentList: [
       {
         icon: "assets/img/theme/light/person-4.jpg",
-        userName: "Alex Michael",
-        createTime: "2020-01-10",
-        content: "Some quick example text to build on the card title.",
+        createTime: "",
+        content: "",
       },
     ],
   };
@@ -199,32 +198,43 @@ class App extends React.Component {
    * @description getComments
    */
   getComments = (id) => {
-    console.log(account, password);
     $.ajax({
-      url: "/user?id=" + id,
+      url: "/user/" + id +"/comments",
       method: "GET",
-      data: { id },
     }).then((res) => {
-      //TODO
-      // this.setState({
-      // commentList:res.data
-      // })
+      let commentList = [];
+      let comment = {
+        icon: "assets/img/theme/light/person-4.jpg",
+        createTime: "",
+        content: ""
+      }
+      for (comment of res){
+        commentList.push({
+            icon: "assets/img/theme/light/person-4.jpg",
+            createTime: comment.time,
+            content: comment.content
+        });
+      }
+      this.setState({
+        commentList: commentList
+      });
     });
   };
   /**
    * @description getProfile
    */
   getProfile = (id) => {
-    console.log(account, password);
     $.ajax({
-      url: "/user",
+      url: "/user/" + id,
       method: "GET",
-      data: { id },
     }).then((res) => {
-      // this.setState({
-      // profile:res.data,
-      // description:rÎes.data
-      // })
+      this.setState({
+        profile: {
+          userName: res.userName,
+          description: "Very Fancy",
+          email: res.email,
+        }
+      });
     });
   };
   /**
@@ -251,9 +261,10 @@ class App extends React.Component {
       //TODO
     });
   };
+
   componentDidMount() {
-    // this.getProfile()
-    // this.getComments()
+    this.getProfile("5ec0d460847e415d8c857c4e");
+    this.getComments("5ec0d460847e415d8c857c4e");
   }
   render() {
     return (
