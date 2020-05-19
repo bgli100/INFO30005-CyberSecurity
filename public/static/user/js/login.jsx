@@ -33,7 +33,7 @@ class App extends React.Component {
   }
   renderRedirect = () => {
     if (this.state.redirect) {
-      return <Redirect to='/user#home' />
+      window.location.hash = 'home';
     }
   }
 
