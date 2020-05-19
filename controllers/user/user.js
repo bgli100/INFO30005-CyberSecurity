@@ -47,28 +47,6 @@ const verifyLogin = (req, res) => {
  * @param {*} res 
  */
 const logout = (req, res) => {
-    // const id = req.params.id;
-    // if(!param.validateId(res, id)) {
-    //     return;
-    // }
-    // // verification of user infomation
-    // let hasError = getUserIDFromCookie(req, res).then((id_cookie)=>{
-    //     if (!id_cookie) {
-    //         console.error("Error, you have not logged in");
-    //         res.json({
-    //             error: "you have not logged in"
-    //         });
-    //         return true;
-    //     } else if (id != id_cookie){
-    //         console.error("userInfo unmatched");
-    //         res.json({
-    //             error: "user information unmatched"
-    //         });
-    //         return true;
-    //     }
-    //     return false;
-    // });
-    // if (hasError) return;
     res.clearCookie('_userID', {Path : '/'})
     .json({
         success: true
@@ -142,7 +120,7 @@ const updateProfile = (req, res) => {
     const new_icon = req.body.icon;
     const new_password = req.body.password;
     const new_email = req.body.email;
-
+    const new_description = req.body.description;
     if (!param.validateId(res,req.params.id)){
         return;
     }
@@ -181,6 +159,10 @@ const updateProfile = (req, res) => {
         }
         if (new_email){
             doc.email = new_email;
+        }
+
+        if (new_description){
+            doc.description = description;
         }
         doc.save();
         doc = doc.toObject();
@@ -286,4 +268,32 @@ const getAdminIDFromCookie = async (req, res) => {
     }
 }
 
-module.exports = {indexPage, verifyLogin, signup, getProfile, updateProfile, getPostsByUser,getCommentsByUser, logout, getUserIDFromCookie, getAdminIDFromCookie};
+/**
+ * check cookie check if request contains cookie value for user to check if a user has logged in
+ * @param {*} req 
+ * @param {*} res 
+ */
+const checkCookie = (req, res) =>{
+    getUserIDFromCookie(req, res, silent = true).then((id)=>{
+        if (!id) {
+            res.json({
+                error: 'not logged in'
+            });
+            return;
+        }
+        User.findById(id, (err, doc) => {
+            if (err || !doc) {
+                console.error('error, no user found');
+                res.json({
+                    error: 'no user found'
+                });
+                return;
+            }
+            doc = doc.toObject();
+            doc.password = "";
+            res.json(doc);
+        });
+    });
+};
+
+module.exports = {indexPage, verifyLogin, signup, getProfile, updateProfile, getPostsByUser,getCommentsByUser, logout, getUserIDFromCookie, getAdminIDFromCookie, checkCookie};
