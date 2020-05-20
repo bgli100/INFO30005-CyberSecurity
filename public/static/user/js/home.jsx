@@ -139,27 +139,28 @@ const subPageMap = {
   ),
   Update: (context) => (
     <div>
-      {Object.keys(context.state.profile).map((item, index) => {
+      {Object.keys(context.state.update_val).map((item, index) => {
         return (
           <Form.Text
             label={item}
             placeholder={`Please input ${item}`}
-            value={context.state.profile[item]}
+            value={context.state.update_val[item]}
             onChange={(value) => {
               context.setState({
-                profile: {
-                  ...context.state.profile,
+                update_val: {
+                  ...context.state.update_val,
                   [item]: value,
                 },
               });
-            }}
+            }
+          }
           />
         );
       })}
       <button
         type="button"
         class="btn btn-sm btn-primary"
-        onClick={() => context.updateProfile()}
+        onClick={() => context.updateProfile("5ec0d460847e415d8c857c4e")}
       >
         Update
       </button>
@@ -181,6 +182,10 @@ class App extends React.Component {
       password: "",
       email: "",
     },
+    update_val : {
+      description: "",
+      email: "",
+    },
     description: {
       followers: 100,
       following: 20,
@@ -193,6 +198,26 @@ class App extends React.Component {
         content: "",
       },
     ]
+  };
+  toast = ({ type = "success", message = "", duration = 1000 }) => {
+    let caseMap = {
+      error: ({ type, message }) => (
+          <div className="alert alert-danger" role="alert">
+            <strong>{message}</strong>
+          </div>
+      ),
+      success: ({ type, message }) => (
+          <div className="alert alert-success" role="alert">
+            <strong>{message}</strong>
+          </div>
+      ),
+    };
+    let modalToast = document.createElement('div')
+    document.body.appendChild(modalToast)
+    ReactDOM.render(caseMap[type]({type, message}),modalToast);
+    setTimeout(() => {
+        modalToast.remove()
+    }, duration);
   };
   /**
    * @description getComments
@@ -243,24 +268,43 @@ class App extends React.Component {
   /**
    * @description updateProfile
    */
-  updateProfile = () => {
-    let id = 0;
+  updateProfile = (id) => {
+    let data = this.state.update_val;
+    if (!data.email && !data.description){
+      this.toast({
+        type:'error',
+        message:'Please enter at least one entry'
+      });
+      return;
+    }
+    if (data.email){
+      const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+      if (!emailReg.test(data.email)) {
+        this.toast({
+          type: "error",
+          message: "Please input correct email!",
+        });
+        return;
+      }
+    }
+    
     $.ajax({
-      url: "/user/checkcookie",
-      mehtod: "GET"
-    }).then((res) => {
-      id = res._id;
-    });
-    $.ajax({
-      url: "/user?id=" + id,
+      url: "/user/" + id,
       method: "POST",
-      data: {
-        password,
-        email,
-        icon,
-      },
+      data: data,
     }).then((res) => {
-      //TODO
+      if (!res || res.error){
+        this.toast({
+          type:'error',
+          message:'Update Error! Please re-log in and try again'
+        });
+      }
+      else{
+        this.toast({
+          type:'success',
+          message:'You have successfully update your profile'
+        });
+      }
     });
   };
 
@@ -339,7 +383,6 @@ class App extends React.Component {
                         index={index}
                         onClick={() => {
                           this.setState({ activeIndex: index });
-                          // this.getProfile()
                         }}
                       />
                     ))}

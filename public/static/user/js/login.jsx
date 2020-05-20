@@ -33,7 +33,7 @@ class App extends React.Component {
   }
   renderRedirect = () => {
     if (this.state.redirect) {
-      window.location.hash = '';
+      window.location.hash = 'profile';
     }
   }
 
