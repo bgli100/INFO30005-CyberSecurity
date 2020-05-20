@@ -160,7 +160,7 @@ const subPageMap = {
       <button
         type="button"
         class="btn btn-sm btn-primary"
-        onClick={() => context.updateProfile("5ec0d460847e415d8c857c4e")}
+        onClick={() => context.updateProfile()}
       >
         Update
       </button>
@@ -191,15 +191,10 @@ class App extends React.Component {
       following: 20,
       rating: 39,
     },
-    commentList: [
-      {
-        icon: "assets/img/theme/light/person-4.jpg",
-        createTime: "",
-        content: "",
-      },
-    ]
+    commentList: [],
+    redirect : false
   };
-  toast = ({ type = "success", message = "", duration = 1000 }) => {
+  toast = ({ type = "success", message = "", duration = 2000 }) => {
     let caseMap = {
       error: ({ type, message }) => (
           <div className="alert alert-danger" role="alert">
@@ -222,20 +217,25 @@ class App extends React.Component {
   /**
    * @description getComments
    */
-  getComments = (id) => {
+  getComments = () => {
+    const pathname = window.location.pathname;
+    const id = pathname.split('/')[2];
     $.ajax({
       url: "/user/" + id +"/comments",
       method: "GET",
     }).then((res) => {
+      if (!res || res.error){
+        return;
+      }
       let commentList = [];
       let comment = {
-        icon: "assets/img/theme/light/person-4.jpg",
+        icon: "/assets/img/theme/light/person-4.jpg",
         createTime: "",
         content: ""
       }
       for (comment of res){
         commentList.push({
-            icon: "assets/img/theme/light/person-4.jpg",
+            icon: "/assets/img/theme/light/person-4.jpg",
             createTime: comment.time,
             content: comment.content
         });
@@ -249,11 +249,21 @@ class App extends React.Component {
   /**
    * @description getProfile
    */
-  getProfile = (id) => {
+  getProfile = () => {
+    const pathname = window.location.pathname;
+    const id = pathname.split('/')[2];
     $.ajax({
       url: "/user/" + id,
       method: "GET",
     }).then((res) => {
+      if (!res || res.error){
+        this.toast({
+          type:'error',
+          message:'Invalid user ID path'
+        });
+        this.setRedirect();
+        return;
+      }
       let des = res.description?res.description:"This user has not set up any description";
       this.setState({
         profile: {
@@ -268,18 +278,20 @@ class App extends React.Component {
   /**
    * @description updateProfile
    */
-  updateProfile = (id) => {
-    let data = this.state.update_val;
-    if (!data.email && !data.description){
+  updateProfile = () => {
+    const pathname = window.location.pathname;
+    const id = pathname.split('/')[2];
+    let { description, email } = this.state;
+    if (!description && !email){
       this.toast({
         type:'error',
         message:'Please enter at least one entry'
       });
       return;
     }
-    if (data.email){
+    if (email){
       const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
-      if (!emailReg.test(data.email)) {
+      if (!emailReg.test(email)) {
         this.toast({
           type: "error",
           message: "Please input correct email!",
@@ -287,28 +299,45 @@ class App extends React.Component {
         return;
       }
     }
-    
+
     $.ajax({
       url: "/user/" + id,
-      method: "POST",
-      data: data,
-    }).then((res) => {
-      if (!res || res.error){
-        this.toast({
-          type:'error',
-          message:'Update Error! Please re-log in and try again'
-        });
-      }
-      else{
-        this.toast({
-          type:'success',
-          message:'You have successfully update your profile'
-        });
-      }
-    });
+      method: "PUT",
+      data: {
+        description,
+        email
+      },
+    })
+    // .then((res) => {
+    //   if (!res || res.error){
+    //     this.toast({
+    //       type:'error',
+    //       message:'Update Error! Please re-log in and try again'
+    //     });
+    //   }
+    //   else{
+    //     this.toast({
+    //       type:'success',
+    //       message:'You have successfully update your profile'
+    //     });
+    //   }
+    // });
   };
 
-  setNavItemList = (id)=>{
+  setRedirect = () => {
+    this.setState({
+      redirect: true
+    })
+  }
+  renderRedirect = () => {
+    // redirect to an error page, now go to the home page
+    if (this.state.redirect) {
+      window.location.pathname = '/';
+    }
+  }
+  setNavItemList = ()=>{
+    const pathname = window.location.pathname;
+    const id = pathname.split('/')[2];
     $.ajax({
       url: "/user/checkcookie",
       mehtod: "GET"
@@ -335,6 +364,7 @@ class App extends React.Component {
         $('#navbar-main-collapse>ul.d-none>li:nth-child(1)').hide();
         $('#navbar-main-collapse>ul.d-none>li:nth-child(2)').show();
         $('#navbar-main-collapse>ul.mx-auto>li:nth-child(2)').show();
+        $('#navbar-main-collapse>ul.mx-auto>li:nth-child(2)').show();
       }
       else{
         $('#navbar-main-collapse>ul.d-none>li:nth-child(1)').show();
@@ -345,9 +375,9 @@ class App extends React.Component {
   }
   componentDidMount() {
     this.signInStatus();
-    this.getProfile("5ec0d460847e415d8c857c4e");
-    this.getComments("5ec0d460847e415d8c857c4e");
-    this.setNavItemList("5ec0d460847e415d8c857c4e");
+    this.setNavItemList();
+    this.getProfile();
+    this.getComments();
   }
   render() {
     return (

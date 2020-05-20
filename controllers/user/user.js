@@ -14,10 +14,17 @@ const param = require('../../models/param');
  */
 const indexPage = (req, res) => {
     let isLogin = getUserIDFromCookie(req, res, true) != false;
-    res.render('user', { is_login: isLogin });
+    res.render('user', { is_login: isLogin, route : 'static/user/js/routes.js'});
 }
 
-
+/**
+ * user profile page
+ * @param {} req 
+ * @param {*} res 
+ */
+const profilePage = (req, res) =>{
+    res.render('user', {route:'/static/user/js/profile_route.js'});
+}
 /**
  * authenticate a user log in
  * @param {} req 
@@ -296,4 +303,4 @@ const checkCookie = (req, res) =>{
     });
 };
 
-module.exports = {indexPage, verifyLogin, signup, getProfile, updateProfile, getPostsByUser,getCommentsByUser, logout, getUserIDFromCookie, getAdminIDFromCookie, checkCookie};
+module.exports = {indexPage,profilePage, verifyLogin, signup, getProfile, updateProfile, getPostsByUser,getCommentsByUser, logout, getUserIDFromCookie, getAdminIDFromCookie, checkCookie};

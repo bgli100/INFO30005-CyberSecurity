@@ -1,8 +1,7 @@
 //dont need react router is so non-light-weight
 //ES5 only whitout BABEL
-var routes = {  
-    ['signup']: 'static/user/js/signup.jsx',
-    ['login']: 'static/user/js/login.jsx',
+var routes = {
+    ['']: '/static/user/js/home.jsx',
 };
 ; (function () {
         $(document).ready(ready)
