@@ -124,13 +124,12 @@ const getProfile = (req, res) => {
  * @param {*} res 
  */
 const updateProfile = (req, res) => {
-    const new_icon = req.body.icon;
-    const new_password = req.body.password;
-    const new_email = req.body.email;
-    const new_description = req.body.description;
-    if (!param.validateId(res,req.params.id)){
+    if (!param.validateId(res, req.params.id) ||
+        !param.validateBody(req, res, ['email', 'description'])){
         return;
     }
+    const new_email = req.body.email;
+    const new_description = req.body.description;
     let hasError = getUserIDFromCookie(req, res, true).then((id)=>{
         if(!id) {
             console.error("Error, you have not logged in");
@@ -147,7 +146,12 @@ const updateProfile = (req, res) => {
         }
     });
 
-    if (hasError) return;
+    if (hasError) {
+        res.json({
+            error: "not logged in"
+        });
+        return;
+    }
 
     const id = req.params.id;
     User.findById(ObjectId(id), (err, doc) =>{
@@ -158,18 +162,14 @@ const updateProfile = (req, res) => {
             });
             return;
         }
-        if (new_icon){
-            doc.icon = new_icon;
-        }
-        if (new_password){
-            doc.password = crypto.createHash("md5").update(new_password + SALT).digest('hex');
-        }
+        //if (new_password){
+        //    doc.password = crypto.createHash("md5").update(new_password + SALT).digest('hex');
+        //}
         if (new_email){
             doc.email = new_email;
         }
-
         if (new_description){
-            doc.description = description;
+            doc.description = new_description;
         }
         doc.save();
         doc = doc.toObject();

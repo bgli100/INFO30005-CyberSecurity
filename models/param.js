@@ -16,6 +16,7 @@ const validateBody = (req, res, required, silent = false) => {
         console.log(req.body, key, typeof req.body[key]);
         switch(key) {
             case 'content': // post content, comment content, etc.
+            case 'description':
                 flag = req.body[key];
                 if(!flag) msg = "content can not be missing";
                 break;
@@ -26,6 +27,11 @@ const validateBody = (req, res, required, silent = false) => {
             case 'rating': // rating value
                 flag = req.body[key] && parseInt(req.body[key], 10) in [-1, 0, 1];
                 if(!flag) msg = "rating must be an integer value ranged in [-1, 1]";
+                break;
+            case 'email': // user email
+                const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+                flag = req.body[key] && emailRegexp.test(req.body[key]);
+                if(!flag) msg = "email address must be valid";
                 break;
             default:
                 break;
