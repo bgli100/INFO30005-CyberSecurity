@@ -281,7 +281,7 @@ class App extends React.Component {
   updateProfile = () => {
     const pathname = window.location.pathname;
     const id = pathname.split('/')[2];
-    let { description, email } = this.state;
+    let { description, email } = this.state.update_val;
     if (!description && !email){
       this.toast({
         type:'error',
@@ -308,20 +308,22 @@ class App extends React.Component {
         email
       },
     })
-    // .then((res) => {
-    //   if (!res || res.error){
-    //     this.toast({
-    //       type:'error',
-    //       message:'Update Error! Please re-log in and try again'
-    //     });
-    //   }
-    //   else{
-    //     this.toast({
-    //       type:'success',
-    //       message:'You have successfully update your profile'
-    //     });
-    //   }
-    // });
+    .then((res) => {
+      if (!res || res.error){
+        console.log(res);
+        this.toast({
+          type:'error',
+          message:'Update Error! Please re-log in and try again'
+        });
+      }
+      else{
+        this.toast({
+          type:'success',
+          message:'You have successfully update your profile'
+        });
+        window.location.reload(true);
+      }
+    });
   };
 
   setRedirect = () => {

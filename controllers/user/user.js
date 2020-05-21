@@ -124,32 +124,41 @@ const getProfile = (req, res) => {
  * @param {*} res 
  */
 const updateProfile = (req, res) => {
-    if (!param.validateId(res, req.params.id) ||
-        !param.validateBody(req, res, ['email', 'description'])){
+    if (!param.validateId(res, req.params.id)){
+        return;
+    }
+    // should enter at least one item
+    else if (!req.body.email && !req.body.description){
+        res.json({
+            error: "enter at least one item"
+        });
+    }
+    else if (req.body.email && !param.validateBody(req,res,["email"])){
+        return;
+    }
+    else if (req.body.description && !param.validateBody(req,res,["desciption"])){
         return;
     }
     const new_email = req.body.email;
     const new_description = req.body.description;
-    let hasError = getUserIDFromCookie(req, res, true).then((id)=>{
+    var hasError = false;
+    getUserIDFromCookie(req, res, true).then((id)=>{
         if(!id) {
             console.error("Error, you have not logged in");
             res.json({
                 error: "you have not logged in"
             });
-            return true;
+            hasError = true;
         } else if (id != req.params.id) {
             console.error("userInfo unmatched");
             res.json({
                 error: "user information unmatched"
             });
-            return true;
+            hasError = true;
         }
     });
 
     if (hasError) {
-        res.json({
-            error: "not logged in"
-        });
         return;
     }
 
@@ -162,9 +171,6 @@ const updateProfile = (req, res) => {
             });
             return;
         }
-        //if (new_password){
-        //    doc.password = crypto.createHash("md5").update(new_password + SALT).digest('hex');
-        //}
         if (new_email){
             doc.email = new_email;
         }

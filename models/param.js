@@ -13,7 +13,6 @@ const validateBody = (req, res, required, silent = false) => {
     flag = true;
     for(const k in required) {
         key = required[k];
-        console.log(req.body, key, typeof req.body[key]);
         switch(key) {
             case 'content': // post content, comment content, etc.
             case 'description':
