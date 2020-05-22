@@ -13,6 +13,8 @@ html
         script(src='/assets/js/react.min.js')
         script(src='/assets/js/react-dom.min.js')
         script(src='/assets/js/babel.min.js')
+        script(src='/assets/js/require.min.js')
+
         style.
             #header-main{
                 display:block;
@@ -23,7 +25,7 @@ html
     nav#navbar-main.navbar.navbar-main.navbar-expand-lg.navbar-light
         .container
             // Brand
-            a.navbar-brand(href='/user#')
+            a.navbar-brand(href='/forum')
                 img#navbar-logo(alt='Image placeholder' src='/assets/img/Cyberium.png')
             // Toggler
             button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbar-main-collapse' aria-controls='navbar-main-collapse' aria-expanded='false' aria-label='Toggle navigation')
@@ -41,15 +43,21 @@ html
                     li.nav-item
                       a.nav-link(href='/forum') Forum
                     li.nav-item
-                      a.nav-link(href='/user#home') Home
+                        script. 
+                            $.ajax({url : "/user/checkcookie",method : "GET"}).then(
+                                function (res) {
+                                    if (res && !res.error){
+                                        document.getElementById("Profile").href = '/user/'+res._id+'/profile';
+                                    }});
+                        a.nav-link(href='/', id = "Home") Profile
                 // Right navigation
                 ul.navbar-nav.align-items-lg-center.d-none.d-lg-flex.ml-lg-auto
                     // Auth
                     li.nav-item
-                        a.btn.btn-sm.btn-primary.btn-icon.ml-3(href='/user#' target='_blank')
+                        a.btn.btn-sm.btn-primary.btn-icon.ml-3(href='/user#login')
                             span.btn-inner--text Sign In
                     li.nav-item
-                        a.nav-link(href='#', onclick='javascript:document.cookie="_userID=";$("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();$("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();')
+                        a.nav-link(href='/user#login', onclick='javascript:$.ajax({url : "/user/logout",method : "GET"})')
                             | Sign Out
 
 

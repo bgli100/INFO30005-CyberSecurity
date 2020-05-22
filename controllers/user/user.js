@@ -14,10 +14,17 @@ const param = require('../../models/param');
  */
 const indexPage = (req, res) => {
     let isLogin = getUserIDFromCookie(req, res, true) != false;
-    res.render('user', { is_login: isLogin });
+    res.render('user', { is_login: isLogin, route : 'static/user/js/routes.js'});
 }
 
-
+/**
+ * user profile page
+ * @param {} req 
+ * @param {*} res 
+ */
+const profilePage = (req, res) =>{
+    res.render('user', {route:'/static/user/js/profile_route.js'});
+}
 /**
  * authenticate a user log in
  * @param {} req 
@@ -47,28 +54,6 @@ const verifyLogin = (req, res) => {
  * @param {*} res 
  */
 const logout = (req, res) => {
-    // const id = req.params.id;
-    // if(!param.validateId(res, id)) {
-    //     return;
-    // }
-    // // verification of user infomation
-    // let hasError = getUserIDFromCookie(req, res).then((id_cookie)=>{
-    //     if (!id_cookie) {
-    //         console.error("Error, you have not logged in");
-    //         res.json({
-    //             error: "you have not logged in"
-    //         });
-    //         return true;
-    //     } else if (id != id_cookie){
-    //         console.error("userInfo unmatched");
-    //         res.json({
-    //             error: "user information unmatched"
-    //         });
-    //         return true;
-    //     }
-    //     return false;
-    // });
-    // if (hasError) return;
     res.clearCookie('_userID', {Path : '/'})
     .json({
         success: true
@@ -139,30 +124,43 @@ const getProfile = (req, res) => {
  * @param {*} res 
  */
 const updateProfile = (req, res) => {
-    const new_icon = req.body.icon;
-    const new_password = req.body.password;
-    const new_email = req.body.email;
-
-    if (!param.validateId(res,req.params.id)){
+    if (!param.validateId(res, req.params.id)){
         return;
     }
-    let hasError = getUserIDFromCookie(req, res, true).then((id)=>{
+    // should enter at least one item
+    else if (!req.body.email && !req.body.description){
+        res.json({
+            error: "enter at least one item"
+        });
+    }
+    else if (req.body.email && !param.validateBody(req,res,["email"])){
+        return;
+    }
+    else if (req.body.description && !param.validateBody(req,res,["desciption"])){
+        return;
+    }
+    const new_email = req.body.email;
+    const new_description = req.body.description;
+    var hasError = false;
+    getUserIDFromCookie(req, res, true).then((id)=>{
         if(!id) {
             console.error("Error, you have not logged in");
             res.json({
                 error: "you have not logged in"
             });
-            return true;
+            hasError = true;
         } else if (id != req.params.id) {
             console.error("userInfo unmatched");
             res.json({
                 error: "user information unmatched"
             });
-            return true;
+            hasError = true;
         }
     });
 
-    if (hasError) return;
+    if (hasError) {
+        return;
+    }
 
     const id = req.params.id;
     User.findById(ObjectId(id), (err, doc) =>{
@@ -173,14 +171,11 @@ const updateProfile = (req, res) => {
             });
             return;
         }
-        if (new_icon){
-            doc.icon = new_icon;
-        }
-        if (new_password){
-            doc.password = crypto.createHash("md5").update(new_password + SALT).digest('hex');
-        }
         if (new_email){
             doc.email = new_email;
+        }
+        if (new_description){
+            doc.description = new_description;
         }
         doc.save();
         doc = doc.toObject();
@@ -286,4 +281,32 @@ const getAdminIDFromCookie = async (req, res) => {
     }
 }
 
-module.exports = {indexPage, verifyLogin, signup, getProfile, updateProfile, getPostsByUser,getCommentsByUser, logout, getUserIDFromCookie, getAdminIDFromCookie};
+/**
+ * check cookie check if request contains cookie value for user to check if a user has logged in
+ * @param {*} req 
+ * @param {*} res 
+ */
+const checkCookie = (req, res) =>{
+    getUserIDFromCookie(req, res, silent = true).then((id)=>{
+        if (!id) {
+            res.json({
+                error: 'not logged in'
+            });
+            return;
+        }
+        User.findById(id, (err, doc) => {
+            if (err || !doc) {
+                console.error('error, no user found');
+                res.json({
+                    error: 'no user found'
+                });
+                return;
+            }
+            doc = doc.toObject();
+            doc.password = "";
+            res.json(doc);
+        });
+    });
+};
+
+module.exports = {indexPage,profilePage, verifyLogin, signup, getProfile, updateProfile, getPostsByUser,getCommentsByUser, logout, getUserIDFromCookie, getAdminIDFromCookie, checkCookie};

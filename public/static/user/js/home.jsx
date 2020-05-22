@@ -1,5 +1,26 @@
+let Profile;
+let Update;
+let subPageMap = {};
+
+//module loader
+window.loadJSX(
+  [
+    "/static/user/js/components/Profile.jsx",
+    "/static/user/js/components/Update.jsx",
+  ],
+  ([ProfileCode, UpdateCode]) => {
+    Profile = eval(ProfileCode);
+    Update = eval(UpdateCode);
+    subPageMap = {
+      Profile: (context) => Profile({ context }),
+      Update: (context) => Update({ context }),
+    };
+    ReactDOM.render(<App />, document.getElementById("root"));
+  }
+);
+
 /**
- * @description Components 
+ * @description Components
  */
 const NavItem = ({ name, index, curIndex, onClick }) => (
   <li class="nav-item">
@@ -103,82 +124,22 @@ const Form = {
   ),
 };
 
-const navItemList = ["Home", "Profile"];
-const subPageMap = {
-  Home: (context) => (
-    <div className="container">
-      <div class="card-header">
-        <h6>About Me</h6>
-      </div>
-      <div className="card card-fluid">
-        <div className="card-body">
-          {Object.keys(context.state.description).map((item, index) => (
-            <React.Fragment>
-              <HomeInfoItem
-                item={{ name: item, value: context.state.description[item] }}
-              />
-              {index == Object.keys(context.state.description).length - 1 ? (
-                ""
-              ) : (
-                <hr className="my-3" />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-
-      <div class="card-header">
-        <h6>Comments</h6>
-      </div>
-      {context.state.commentList.map((item, index) => (
-        <React.Fragment>
-          <CommentItem item={item} />
-        </React.Fragment>
-      ))}
-    </div>
-  ),
-  Profile: (context) => (
-    <div>
-      {Object.keys(context.state.profile).map((item, index) => {
-        return (
-          <Form.Text
-            label={item}
-            placeholder={`Please input ${item}`}
-            value={context.state.profile[item]}
-            onChange={(value) => {
-              context.setState({
-                profile: {
-                  ...context.state.profile,
-                  [item]: value,
-                },
-              });
-            }}
-          />
-        );
-      })}
-      <button
-        type="button"
-        class="btn btn-sm btn-primary"
-        onClick={() => context.updateProfile()}
-      >
-        Update
-      </button>
-    </div>
-  ),
-};
-
-
+var navItemList = ["Profile", "Update"];
 
 /**
- * @description AppClass 
+ * @description AppClass
  */
 class App extends React.Component {
   state = {
     activeIndex: 0,
     profile: {
-      userName: "Emma",
-      description: "Very Fancy",
+      userName: "",
+      description: "",
       password: "",
+      email: "",
+    },
+    update_val: {
+      description: "",
       email: "",
     },
     description: {
@@ -186,74 +147,225 @@ class App extends React.Component {
       following: 20,
       rating: 39,
     },
-    commentList: [
-      {
-        icon: "assets/img/theme/light/person-4.jpg",
-        userName: "Alex Michael",
-        createTime: "2020-01-10",
-        content: "Some quick example text to build on the card title.",
-      },
-    ],
+    commentList: [],
+    postList: [],
+    redirect: false,
+  };
+  toast = ({ type = "success", message = "", duration = 2000 }) => {
+    let caseMap = {
+      error: ({ type, message }) => (
+        <div className="alert alert-danger" role="alert">
+          <strong>{message}</strong>
+        </div>
+      ),
+      success: ({ type, message }) => (
+        <div className="alert alert-success" role="alert">
+          <strong>{message}</strong>
+        </div>
+      ),
+    };
+    let modalToast = document.createElement("div");
+    document.body.appendChild(modalToast);
+    ReactDOM.render(caseMap[type]({ type, message }), modalToast);
+    setTimeout(() => {
+      modalToast.remove();
+    }, duration);
   };
   /**
    * @description getComments
    */
-  getComments = (id) => {
-    console.log(account, password);
+  getComments = () => {
+    const pathname = window.location.pathname;
+    const id = pathname.split("/")[2];
     $.ajax({
-      url: "/user?id=" + id,
+      url: "/user/" + id + "/comments",
       method: "GET",
-      data: { id },
     }).then((res) => {
-      //TODO
-      // this.setState({
-      // commentList:res.data
-      // })
+      if (!res || res.error) {
+        return;
+      }
+      let commentList = [];
+      let comment = {
+        icon: "/assets/img/theme/light/person-4.jpg",
+        createTime: "",
+        content: "",
+      };
+      for (comment of res) {
+        commentList.push({
+          icon: "/assets/img/theme/light/person-4.jpg",
+          createTime: comment.time,
+          content: comment.content,
+        });
+      }
+      this.setState({
+        commentList: commentList,
+      });
     });
   };
+  /**
+   * @description getPosts
+   */
+  getPosts = () => {
+    const pathname = window.location.pathname;
+    const id = pathname.split("/")[2];
+    $.ajax({
+      url: "/user/" + id + "/posts",
+      method: "GET",
+    }).then((res) => {
+      if (!res || res.error) {
+        return;
+      }
+      let postList = [];
+      let post = {
+        icon: "/assets/img/theme/light/person-4.jpg",
+        createTime: "",
+        content: "",
+      };
+      for (post of res) {
+        postList.push({
+          icon: "/assets/img/theme/light/person-4.jpg",
+          createTime: post.time,
+          content: post.content,
+        });
+      }
+      this.setState({
+        postList
+      });
+    });
+  };
+
   /**
    * @description getProfile
    */
-  getProfile = (id) => {
-    console.log(account, password);
+  getProfile = () => {
+    const pathname = window.location.pathname;
+    const id = pathname.split("/")[2];
     $.ajax({
-      url: "/user",
+      url: "/user/" + id,
       method: "GET",
-      data: { id },
     }).then((res) => {
-      // this.setState({
-      // profile:res.data,
-      // description:rÎes.data
-      // })
+      if (!res || res.error) {
+        this.setRedirect();
+        this.renderRedirect();
+        return;
+      }
+      let des = res.description
+        ? res.description
+        : "This user has not set up any description";
+      this.setState({
+        profile: {
+          userName: res.userName,
+          description: des,
+          email: res.email,
+        },
+      });
     });
   };
+
   /**
    * @description updateProfile
    */
-  updateProfile = (id) => {
-    let {
-      userName = "",
-      password = "",
-      email = "",
-      icon = "",
-    } = this.state.profile;
+  updateProfile = () => {
+    const pathname = window.location.pathname;
+    const id = pathname.split('/')[2];
+    let { description, email } = this.state.update_val;
+    if (!description && !email){
+      this.toast({
+        type:'error',
+        message:'Please enter at least one entry'
+      });
+      return;
+    }
+    if (email){
+      const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+      if (!emailReg.test(email)) {
+        this.toast({
+          type: "error",
+          message: "Please input correct email!",
+        });
+        return;
+      }
+    }
+
     $.ajax({
-      url: "/user?id=" + id,
-      method: "POST",
+      url: "/user/" + id,
+      method: "PUT",
       data: {
-        userName,
-        password,
-        email,
-        class: this.state.profile.class,
-        icon,
+        description,
+        email
       },
+    })
+    .then((res) => {
+      if (!res || res.error){
+        console.log(res);
+        this.toast({
+          type:'error',
+          message:'Update Error! Please re-log in and try again'
+        });
+      }
+      else{
+        this.toast({
+          type:'success',
+          message:'You have successfully update your profile'
+        });
+        window.location.reload(true);
+      }
+    });
+  };
+
+
+  setRedirect = () => {
+    this.setState({
+      redirect: true,
+    });
+  };
+  renderRedirect = () => {
+    // redirect to an error page, now go to the home page
+    if (this.state.redirect) {
+      window.location.pathname = "/404";
+    }
+  };
+  setNavItemList = () => {
+    const pathname = window.location.pathname;
+    const id = pathname.split("/")[2];
+    $.ajax({
+      url: "/user/checkcookie",
+      mehtod: "GET",
     }).then((res) => {
-      //TODO
+      if (!res || res.error) {
+        navItemList = ["Profile"];
+      } else if (res._id != id) {
+        navItemList = ["Profile"];
+      }
+    });
+  };
+
+  // hide the sign in/ sign out bar and the home link
+  signInStatus = () => {
+    $.ajax({
+      url: "/user/checkcookie",
+      mehtod: "GET",
+    }).then((res) => {
+      if (res && !res.error) {
+        this.setState({
+          cookie_id: res._id,
+        });
+        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").hide();
+        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").show();
+        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
+        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
+      } else {
+        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();
+        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();
+        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").hide();
+      }
     });
   };
   componentDidMount() {
-    // this.getProfile()
-    // this.getComments()
+    this.signInStatus();
+    this.setNavItemList();
+    this.getProfile();
+    this.getComments();
   }
   render() {
     return (
@@ -289,15 +401,12 @@ class App extends React.Component {
                         index={index}
                         onClick={() => {
                           this.setState({ activeIndex: index });
-                          // this.getProfile()
                         }}
                       />
                     ))}
                   </ul>
                   <div style={{ padding: "20px 0" }}>
-                    {/* //sdd */}
                     {subPageMap[navItemList[this.state.activeIndex]](this)}
-                    {/* //RTCSrtpSdesTransport */}
                   </div>
                 </div>
               </div>
@@ -308,5 +417,3 @@ class App extends React.Component {
     );
   }
 }
-
-ReactDOM.render(<App />, document.getElementById("root"));

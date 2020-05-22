@@ -2,7 +2,8 @@ class App extends React.Component {
   state = {
     userName: "",
     password: "",
-    email: ""
+    email: "",
+    redirect : false
   };
   toast = ({ type = "success", message = "", duration = 1000 }) => {
     let caseMap = {
@@ -24,6 +25,25 @@ class App extends React.Component {
       modalToast.remove();
     }, duration);
   };
+
+  
+  setRedirect = () => {
+    this.setState({
+      redirect: true
+    })
+  }
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      $.ajax({
+        url: "/user/checkcookie",
+        mehtod: "GET"
+      }).then((res) => {
+        history.pushState("", document.title, window.location.pathname);
+        window.location.pathname = "/user/" + res._id + "/profile";
+      });
+    }
+  }
+
   /**
    * @description signIn
    */
@@ -63,7 +83,14 @@ class App extends React.Component {
         email
       },
     }).then((res) => {
-      if(res && !res.error) {
+      if (res.error) {
+        this.toast({
+          type: "error",
+          message: "used user name",
+        });
+      }
+      else if(res) {
+        this.setRedirect();
         this.toast({
           type: "success",
           message: "Sign Up Succeed!",
@@ -72,6 +99,27 @@ class App extends React.Component {
     });
   };
 
+  // hide the sign in/ sign out bar or the home
+  signInStatus() {
+    $.ajax({
+      url: "/user/checkcookie",
+      mehtod: "GET"
+    }).then((res) => {
+      if (res && !res.error){
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(1)').hide();
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(2)').show();
+        $('#navbar-main-collapse>ul.mx-auto>li:nth-child(2)').show();
+      }
+      else{
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(1)').show();
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(2)').hide();
+        $('#navbar-main-collapse>ul.mx-auto>li:nth-child(2)').hide();
+      }
+    })
+  }
+  componentDidMount(){
+    this.signInStatus();
+  }
   render() {
     return (
       <div>
@@ -157,6 +205,7 @@ class App extends React.Component {
                     </div>
                   </div>
                   <div className="mt-4">
+                    {this.renderRedirect()}
                     <button
                       className="btn btn-block btn-primary"
                       type="button"

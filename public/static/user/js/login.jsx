@@ -2,6 +2,7 @@ class App extends React.Component {
   state = {
     account: "",
     password: "",
+    redirect: false
   };
   toast = ({ type = "success", message = "", duration = 1000 }) => {
     let caseMap = {
@@ -23,6 +24,25 @@ class App extends React.Component {
         modalToast.remove()
     }, duration);
   };
+
+
+  setRedirect = () => {
+    this.setState({
+      redirect: true
+    })
+  }
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      $.ajax({
+        url: "/user/checkcookie",
+        mehtod: "GET"
+      }).then((res) => {
+        history.pushState("", document.title, window.location.pathname);
+        window.location.pathname = "/user/" + res._id + "/profile";
+      });
+    }
+  }
+
   /**
    * @description signIn
    */
@@ -43,7 +63,7 @@ class App extends React.Component {
         })
         return
     }
-    console.log(account, password);
+
     $.ajax({
       url: "/user",
       method: "PUT",
@@ -52,8 +72,15 @@ class App extends React.Component {
         password,
       },
     }).then((res) => {
-      console.log(res && !res.error);
-      if(res && !res.error) {
+      // console.log(res && !res.error);
+      if (res.error) {
+        this.toast({
+          type: "error",
+          message: "unmatched user name or password",
+        });
+      }
+      else {
+        this.setRedirect();
         $('#navbar-main-collapse>ul.d-none>li:nth-child(1)').hide();
         $('#navbar-main-collapse>ul.d-none>li:nth-child(2)').show();
         this.toast({
@@ -64,11 +91,35 @@ class App extends React.Component {
     });
   };
 
+
+  // hide the sign in/ sign out bar or the home
+  signInStatus() {
+    $.ajax({
+      url: "/user/checkcookie",
+      mehtod: "GET"
+    }).then((res) => {
+      console.log(res);
+      if (res && !res.error){
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(1)').hide();
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(2)').show();
+        $('#navbar-main-collapse>ul.mx-auto>li:nth-child(2)').show();
+      }
+      else{
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(1)').show();
+        $('#navbar-main-collapse>ul.d-none>li:nth-child(2)').hide();
+        $('#navbar-main-collapse>ul.mx-auto>li:nth-child(2)').hide();
+      }
+    })
+  }
+  componentDidMount(){
+    this.signInStatus();
+  }
+
+
   render() {
     return (
       <div id="userLogin">
         {/* toast */}
-
         <div className="container d-flex flex-column">
           <div className="row align-items-center justify-content-center min-vh-100">
             <div className="col-md-6 col-lg-5 col-xl-4 py-6 py-md-0">
@@ -128,10 +179,13 @@ class App extends React.Component {
                     </div>
                   </div>
                   <div className="mt-4">
+                    {this.renderRedirect()}
                     <button
                       className="btn btn-block btn-primary"
                       type="button"
-                      onClick={() => this.signIn()}
+                      onClick={() => {
+                        this.signIn();
+                      }}
                     >
                       Sign in
                     </button>
