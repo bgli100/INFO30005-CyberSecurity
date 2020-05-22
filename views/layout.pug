@@ -13,6 +13,8 @@ html
         script(src='/assets/js/react.min.js')
         script(src='/assets/js/react-dom.min.js')
         script(src='/assets/js/babel.min.js')
+        script(src='/assets/js/require.min.js')
+
         style.
             #header-main{
                 display:block;
@@ -45,9 +47,9 @@ html
                             $.ajax({url : "/user/checkcookie",method : "GET"}).then(
                                 function (res) {
                                     if (res && !res.error){
-                                        document.getElementById("Home").href = '/user/'+res._id+'/profile';
+                                        document.getElementById("Profile").href = '/user/'+res._id+'/profile';
                                     }});
-                        a.nav-link(href='/', id = "Home") Home
+                        a.nav-link(href='/', id = "Home") Profile
                 // Right navigation
                 ul.navbar-nav.align-items-lg-center.d-none.d-lg-flex.ml-lg-auto
                     // Auth

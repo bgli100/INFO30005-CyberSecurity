@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  section
+    .container.d-flex.flex-column
+      .row.align-items-center.justify-content-between.min-vh-100
+        .col-12.col-md-6.col-xl-7.order-md-2
+          // Image
+          img.img-fluid(alt='Image placeholder' src='assets/img/svg/illustrations/illustration-13.svg')
+        .col-12.col-md-6.col-xl-5.order-md-1.text-center.text-md-left
+          // Heading
+          h6.display-1.mb-3.font-weight-600.text-warning Ooops!
+          // Text
+          p.lead.text-lg.mb-5 The page you are looking for could not be found.
+          // Button
+          a.btn.btn-dark.btn-icon.hover-translate-y-n3(href='/')
+            span.btn-inner--icon
+              i(data-feather='home')
+            span.btn-inner--text Return To Home
