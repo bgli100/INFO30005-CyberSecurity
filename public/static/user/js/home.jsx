@@ -1,8 +1,8 @@
 /**
- * @description Components 
+ * @description Components
  */
 const NavItem = ({ name, index, curIndex, onClick }) => (
-  <li class="nav-item">
+  <li class='nav-item'>
     <a
       onClick={onClick}
       class={`nav-link ${index === curIndex ? "active" : ""}`}
@@ -13,43 +13,43 @@ const NavItem = ({ name, index, curIndex, onClick }) => (
 );
 
 const HomeInfoItem = ({ item }) => (
-  <div className="row align-items-center">
-    <div className="col">
-      <h6 className="text-sm mb-0">
-        <i className="fab fa-facebook mr-2"></i>
+  <div className='row align-items-center'>
+    <div className='col'>
+      <h6 className='text-sm mb-0'>
+        <i className='fab fa-facebook mr-2'></i>
         {item.name}
       </h6>
     </div>
-    <div className="col-auto">
-      <span className="text-sm">{item.value}</span>
+    <div className='col-auto'>
+      <span className='text-sm'>{item.value}</span>
     </div>
   </div>
 );
 
 const CommentItem = ({ item }) => (
   <div>
-    <a class="list-group-item list-group-item-action">
+    <a class='list-group-item list-group-item-action'>
       <div
-        class="d-flex align-items-center"
-        data-toggle="tooltip"
-        data-placement="right"
-        data-title="2 hrs ago"
-        data-original-title=""
-        title=""
+        class='d-flex align-items-center'
+        data-toggle='tooltip'
+        data-placement='right'
+        data-title='2 hrs ago'
+        data-original-title=''
+        title=''
       >
         <div>
           <img
-            alt="Image placeholder"
+            alt='Image placeholder'
             src={item.icon}
-            class="avatar rounded-circle"
+            class='avatar rounded-circle'
           />
         </div>
-        <div class="flex-fill ml-3">
-          <div class="h6 text-sm mb-0">
+        <div class='flex-fill ml-3'>
+          <div class='h6 text-sm mb-0'>
             {item.userName}
-            <small class="float-right text-muted">{item.createTime}</small>
+            <small class='float-right text-muted'>{item.createTime}</small>
           </div>
-          <p class="text-sm lh-140 mb-0">{item.content}</p>
+          <p class='text-sm lh-140 mb-0'>{item.content}</p>
         </div>
       </div>
     </a>
@@ -62,13 +62,13 @@ const CommentItem = ({ item }) => (
  */
 const Form = {
   Text: ({ label = "", value = "", placeholder = "", onChange = () => {} }) => (
-    <div className="row">
-      <div className="col-md-6">
-        <div className="form-group">
-          <label className="form-control-label">{label}</label>
+    <div className='row'>
+      <div className='col-md-6'>
+        <div className='form-group'>
+          <label className='form-control-label'>{label}</label>
           <input
-            className="form-control"
-            type="text"
+            className='form-control'
+            type='text'
             placeholder={placeholder}
             onChange={(e) => onChange(e.target.value)}
             value={value}
@@ -83,12 +83,12 @@ const Form = {
     options = [],
     onChange = () => {},
   }) => (
-    <div className="row">
-      <div className="col-md-6">
-        <div className="form-group">
-          <label className="form-control-label">Gender</label>
-          <select className="custom-select" onChange={onChange}>
-            <option disabled="" selected={value == -1}>
+    <div className='row'>
+      <div className='col-md-6'>
+        <div className='form-group'>
+          <label className='form-control-label'>Gender</label>
+          <select className='custom-select' onChange={onChange}>
+            <option disabled='' selected={value == -1}>
               {placeholder}
             </option>
             {options.map((item) => {
@@ -106,12 +106,12 @@ const Form = {
 const navItemList = ["Home", "Profile"];
 const subPageMap = {
   Home: (context) => (
-    <div className="container">
-      <div class="card-header">
+    <div className='container'>
+      <div class='card-header'>
         <h6>About Me</h6>
       </div>
-      <div className="card card-fluid">
-        <div className="card-body">
+      <div className='card card-fluid'>
+        <div className='card-body'>
           {Object.keys(context.state.description).map((item, index) => (
             <React.Fragment>
               <HomeInfoItem
@@ -120,14 +120,14 @@ const subPageMap = {
               {index == Object.keys(context.state.description).length - 1 ? (
                 ""
               ) : (
-                <hr className="my-3" />
+                <hr className='my-3' />
               )}
             </React.Fragment>
           ))}
         </div>
       </div>
 
-      <div class="card-header">
+      <div class='card-header'>
         <h6>Comments</h6>
       </div>
       {context.state.commentList.map((item, index) => (
@@ -157,8 +157,8 @@ const subPageMap = {
         );
       })}
       <button
-        type="button"
-        class="btn btn-sm btn-primary"
+        type='button'
+        class='btn btn-sm btn-primary'
         onClick={() => context.updateProfile()}
       >
         Update
@@ -167,10 +167,8 @@ const subPageMap = {
   ),
 };
 
-
-
 /**
- * @description AppClass 
+ * @description AppClass
  */
 class App extends React.Component {
   state = {
@@ -258,30 +256,30 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <section class="pt-5 bg-section-secondary" style={{ minHeight: 900 }}>
-          <div class="container">
-            <div class="row justify-content-center">
-              <div class="col-lg-9">
-                <div class="row align-items-center">
-                  <div class="col-auto">
+        <section class='pt-5 bg-section-secondary' style={{ minHeight: 900 }}>
+          <div class='container'>
+            <div class='row justify-content-center'>
+              <div class='col-lg-9'>
+                <div class='row align-items-center'>
+                  <div class='col-auto'>
                     {/* <!-- Avatar --> */}
                     <img
-                      alt="Image placeholder"
-                      src="../../assets/img/theme/light/person-auth.jpg"
-                      class="avatar avatar-xl rounded-circle"
+                      alt='Image placeholder'
+                      src='../../assets/img/theme/light/person-auth.jpg'
+                      class='avatar avatar-xl rounded-circle'
                     />
                   </div>
-                  <div class="col ml-n3 ml-md-n2">
+                  <div class='col ml-n3 ml-md-n2'>
                     {/* <!-- Title --> */}
-                    <h2 class="mb-0">{this.state.profile.userName}</h2>
+                    <h2 class='mb-0'>{this.state.profile.userName}</h2>
                     {/* <!-- Subtitle --> */}
-                    <span class="text-muted d-block">
+                    <span class='text-muted d-block'>
                       {this.state.profile.description}
                     </span>
                   </div>
                 </div>
-                <div class="mt-4">
-                  <ul class="nav nav-tabs overflow-x">
+                <div class='mt-4'>
+                  <ul class='nav nav-tabs overflow-x'>
                     {navItemList.map((item, index) => (
                       <NavItem
                         name={item}
