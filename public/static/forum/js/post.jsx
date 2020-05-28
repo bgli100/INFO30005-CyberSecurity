@@ -18,10 +18,13 @@ const CommentItem = ({ item }) => (
         </div>
         <div class="flex-fill ml-3">
           <div class="h6 text-sm mb-0">
-            {item.userName}
-            <small class="float-right text-muted">{item.createTime}</small>
+            {item.user}
+            <small class="float-right text-muted">{item.time}</small>
           </div>
           <p class="text-sm lh-140 mb-0">{item.content}</p>
+        </div>
+        <div>
+          <button> like</button>
         </div>
       </div>
     </a>
@@ -119,6 +122,15 @@ class App extends React.Component {
         }, 800);
         return;
       }
+      console.log(res);
+      for (var c of res.comment){
+        $.ajax({
+          url: "/user/" + c.user,
+          method: "GET"
+        }).then((res) => {
+          c.user = res.userName;
+        });
+      }
       this.setState({ post: res });
     });
   };
@@ -153,6 +165,7 @@ class App extends React.Component {
           <div class="container">
             <div class="card-header">
               <h3>{this.state.post.title}</h3>
+              <button>like</button>
             </div>
             <p>{this.state.post.content}</p>
             <div class="card-header">
