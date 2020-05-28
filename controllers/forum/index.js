@@ -1,9 +1,13 @@
 
 const indexPage = (req,res) => {
-    res.render('forum', {route: 'static/forum/js/routes.js'});
+    res.render('forum', {route: '/static/forum/js/routes.js'});
 }
 
-module.exports = {indexPage};
+
+const postPage = (req, res) => {
+    res.render('forum', {route: '/static/forum/js/postRoute.js'});
+}
+module.exports = {indexPage, postPage};
 
 
 // const indexPage = (req, res) => {

@@ -1,41 +1,26 @@
-const CommentItem = ({ item }) => (
-  <div>
-    <a class="list-group-item list-group-item-action">
-      <div
-        class="d-flex align-items-center"
-        data-toggle="tooltip"
-        data-placement="right"
-        data-title="2 hrs ago"
-        data-original-title=""
-        title=""
-      >
-        <div>
-          <img
-            alt="Image placeholder"
-            src={item.icon}
-            class="avatar rounded-circle"
-          />
-        </div>
-        <div class="flex-fill ml-3">
-          <div class="h6 text-sm mb-0">
-            {item.userName}
-            <small class="float-right text-muted">{item.createTime}</small>
-          </div>
-          <p class="text-sm lh-140 mb-0">{item.content}</p>
-        </div>
-      </div>
-    </a>
-  </div>
+const PostItem = ({ item, index }) => (
+  <a href={"/forum/post/"+item._id+"/content"} class="list-group-item list-group-item-action active" style={{ display: 'flex' }}>
+    <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '3%', minWidth: '4%', borderRadius: 5, border: '2px solid #ccc' }}>{index}</span>
+    <div style={{ marginLeft: 10 }}>
+      <h6>{item.title}</h6>
+    </div>
+  </a>
 );
 
 class App extends React.Component {
   state = {
-    forum_id: null,
-    commentList: []
+    posts: [
+      {
+        title: "title",
+        _id: 1,
+      },
+    ],
+    hideCreate : false,
   };
 
   componentDidMount() {
-    this.getForumById()
+    this.getForum();
+    this.signInStatus();
   }
 
   toast = ({ type = "success", message = "", duration = 2000 }) => {
@@ -60,46 +45,62 @@ class App extends React.Component {
   };
 
   /**
- * @description getForumById
+ * @description getForum
  */
-  getForumById = () => {
-    const pathname = window.location.pathname;
-    console.log('pathname', pathname)
-    const id = pathname.split('/')[2];
+  getForum = () => {
     $.ajax({
-      url: `/forum/post/${id}`,
+      url: "/forum/all",
       method: "GET",
     }).then((res) => {
-      if (!res || res.error) {
-        this.toast({
-          type: 'error',
-          message: 'Invalid user ID path'
-        })
-        return;
-      }
-      console.log('this is forum by id', res)
-      this.setState({ forum_id: res })
+      this.setState({ posts: res })
     });
   };
-
+  // hide the sign in/ sign out bar and the home link
+  signInStatus = () => {
+    $.ajax({
+      url: "/user/checkcookie",
+      mehtod: "GET",
+    }).then((res) => {
+      if (res && !res.error) {
+        this.setState({
+          cookie_id: res._id,
+        });
+        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").hide();
+        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").show();
+        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
+        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
+        $("#newpost").show();
+      } else {
+        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();
+        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();
+        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").hide();
+        $("#newpost").hide();
+      }
+    });
+  };
   render() {
-    console.log('state', this.state)
     return (
       <div>
         <section class="pt-5 bg-section-secondary" style={{ minHeight: 900 }}>
           <div class="container">
             <div class="card-header">
-              <h3>Forum</h3>
+              <h3>Forum 1</h3>
             </div>
-            <p>i have a question. I have to export a CSV files of Values. Below is my function. My problem is that i want that the all values within should be splitted with semicolons instead of commas. But there is no .split Methode to achieve this. Because when i read the csv file into arrays i have the problem that they are not splitted correctly.</p>
-            <div class="card-header">
-              <h6>Comments</h6>
+            <div class="list-group">
+              {this.state.posts.map((item, index) => (
+                <React.Fragment>
+                  <PostItem item={item} index={index} />
+                </React.Fragment>
+              ))}
             </div>
-            {this.state.commentList.map((item, index) => (
-              <React.Fragment>
-                <CommentItem item={item} />
-              </React.Fragment>
-            ))}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
+              <a href='/forum#create' >
+                <button type="button" class="btn btn-primary btn-sm" id="newpost">
+                  New Post
+                </button>
+                {}
+              </a>
+            </div>
           </div>
         </section>
       </div>
@@ -107,4 +108,4 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById("root"))
+ReactDOM.render(<App />, document.getElementById("root"));
