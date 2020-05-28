@@ -1,86 +1,104 @@
-import React, { useState } from "react";
-import { List, Button, Pagination, Tag } from "antd";
-
-import { CardCom } from "@component";
-import "./forum.less";
-
-const extData = [
-  {
-    id: 1,
-    name: "Post P",
-    description: "This is testing description of Post p",
-    date: "Topic P",
-    count: 1,
-  },
-  {
-    id: 2,
-    name: "Post R",
-    description: "This is testing description of Post R",
-    date: "Topic R",
-    count: 2,
-  },
-  {
-    id: 3,
-    name: "Post O",
-    description: "This is testing description of Post O",
-    date: "Topic O",
-    count: 3,
-  },
-];
-
-const Forum = (props) => {
-  const { history } = props;
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const onPageChange = async (page) => {
-    const current = 10 * (page - 1) === 5 ? page - 1 : page;
-    let offset = 10 * (current === 0 ? 0 : current - 1);
-    setCurrentPage(current);
+class App extends React.Component {
+  state = {
+    forum: null
   };
 
-  return (
-    <>
-      <h1 style={{ marginLeft: 20 }}>Forum List</h1>
+  componentDidMount() {
+    this.getForum()
+  }
 
-      <CardCom style={{ marginBottom: 20, marginTop: 20 }}>
-        <List
-          style={{ marginBottom: 20 }}
-          dataSource={extData}
-          renderItem={(item) => (
-            <List.Item
-              className='list_item'
-              key={item.id}
-              onClick={() =>
-                history.push(`/forum-list/forum-detail/${item.id}`)
-              }
-            >
-              <Tag style={{ marginRight: 20 }}>{item.count}</Tag>
-              <List.Item.Meta
-                title={<p>{item.name}</p>}
-                description={item.description}
-              />
-              <p>{item.date}</p>
-            </List.Item>
-          )}
-        />
-        <Pagination
-          style={{ float: "right" }}
-          size='large'
-          onChange={onPageChange}
-          current={currentPage}
-          total={10}
-        />
-      </CardCom>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button
-          type='primary'
-          onClick={() => history.push(`/forum-list/post-create`)}
-        >
-          Create your new post
-        </Button>
+  toast = ({ type = "success", message = "", duration = 2000 }) => {
+    let caseMap = {
+      error: ({ type, message }) => (
+          <div className="alert alert-danger" role="alert">
+            <strong>{message}</strong>
+          </div>
+      ),
+      success: ({ type, message }) => (
+          <div className="alert alert-success" role="alert">
+            <strong>{message}</strong>
+          </div>
+      ),
+    };
+    let modalToast = document.createElement('div')
+    document.body.appendChild(modalToast)
+    ReactDOM.render(caseMap[type]({type, message}),modalToast);
+    setTimeout(() => {
+        modalToast.remove()
+    }, duration);
+  };
+
+  /**
+ * @description getForum
+ */
+  getForum = () => {
+    $.ajax({
+      url: "/forum/all",
+      method: "GET",
+    }).then((res) => {
+      if (!res || res.error) {
+        this.toast({
+          type: 'error',
+          message: 'Invalid user ID path'
+        })
+        return;
+      }
+      console.log('this is forum', res)
+      this.setState({ forum: res })
+    });
+  };
+
+  render() {
+    console.log('this is state forum', this.state.forum)
+    return (
+      <div>
+        <section class="pt-5 bg-section-secondary" style={{ minHeight: 900 }}>
+          <div class="container">
+            <div class="card-header">
+              <h3>Forum List</h3>
+            </div>
+            <div class="list-group">
+              <a href={`/forum#one/${2}`} class="list-group-item list-group-item-action active" style={{ display: 'flex' }}>
+                <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '3%', minWidth: '4%', borderRadius: 5, border: '2px solid #ccc' }}>1</span>
+                <div style={{ marginLeft: 10 }}>
+                  <h6>Cras justo odio</h6>
+                  <span>this is content</span>
+                </div>
+              </a>
+              <a href="/forum#one" class="list-group-item list-group-item-action" style={{ display: 'flex' }}>
+                <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '3%', minWidth: '4%', borderRadius: 5, border: '2px solid #ccc' }}>2</span>
+                <div style={{ marginLeft: 10 }}>
+                  <h6>Dapibus ac facilisis in</h6>
+                  <span>this is content of Dapibus ac facilisis</span>
+                </div>
+              </a>
+              <a href="/forum#one" class="list-group-item list-group-item-action" style={{ display: 'flex' }}>
+                <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '3%', minWidth: '4%', borderRadius: 5, border: '2px solid #ccc' }}>3</span>
+                <div style={{ marginLeft: 10 }}>
+                  <h6>Morbi leo risus</h6>
+                  <span>this is content of Morbi leo risus</span>
+                </div>
+              </a>
+              <a href="/forum#one" class="list-group-item list-group-item-action" style={{ display: 'flex' }}>
+                <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '3%', minWidth: '4%', borderRadius: 5, border: '2px solid #ccc' }}>4</span>
+                <div style={{ marginLeft: 10 }}>
+                  <h6>Porta ac consectetur ac</h6>
+                  <span>this is content Porta ac consectetur</span>
+                </div>
+              </a>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
+              <a href='/forum#create' >
+                <button type="button" class="btn btn-primary btn-sm">
+                  Create
+                  </button>
+              </a>
+            </div>
+          </div>
+        </section>
       </div>
-    </>
-  );
-};
+    );
+  }
+}
 
-export { Forum };
+ReactDOM.render(<App />, document.getElementById("root"));
