@@ -6,6 +6,7 @@ let userSchema = new Schema({
     password: {type: String, required: true},
     email: {type: String, required: true},
     icon: {type: String},
+    description: {type: String},
     class: {type: String, enum: ['user', 'admin'], default: 'user'}
 }, {collection: 'Users'});
 
