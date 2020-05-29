@@ -244,10 +244,10 @@ const getCommentsByUser = (req, res) => {
 
 const getUserIDFromCookie = async (req, res, silent = false) => {
     const id = req.cookies._userID;
+    console.log(id);
     if(!id || !param.validateId(res, id, silent)) {
         return false;
     }
-
     const result = await User.findById(id);
 
     if(result && result._id) {

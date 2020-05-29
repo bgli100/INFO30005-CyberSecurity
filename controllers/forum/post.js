@@ -14,8 +14,8 @@ const findAllPost = (_req, res) => {
         });
 };
 
-const createPost = (req, res) => {
-    const userId = user.getUserIDFromCookie(req, res);
+const createPost = async(req, res) => {
+    const userId = await user.getUserIDFromCookie(req, res);
     if(!param.validateBody(req, res, ['title', 'content']) ||
        !userId) {
         return;

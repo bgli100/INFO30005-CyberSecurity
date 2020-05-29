@@ -16,9 +16,9 @@ const getComment = (postId, callback) => {
     }).lean().then(callback);
 };
 
-const createComment = (req, res) => {
+const createComment = async (req, res) => {
     const id = req.params.id;
-    const userId = user.getUserIDFromCookie(req, res);
+    const userId = await user.getUserIDFromCookie(req, res);
     if(!param.validateBody(req, res, ['content']) ||
        !param.validateId(res, id) ||
        !userId) {

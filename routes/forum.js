@@ -7,6 +7,10 @@ const indexController = require('../controllers/forum/index');
 
 //renderPages 
 router.get('/', indexController.indexPage);
+router.get('/post/:id/content', indexController.postPage);
+
+
+router.put('/post/:id/comment', commentController.createComment);
 
 router.get('/all', postController.findAllPost);
 router.put('/post', postController.createPost);
@@ -19,7 +23,6 @@ router.get('/post/:postId/comment/:id/rating', ratingController.getRating('comme
 router.put('/post/:id/rating', ratingController.giveRating('post'));
 router.put('/post/:postId/comment/:id/rating', ratingController.giveRating('comment'));
 
-router.put('/post/:id/comment', commentController.createComment);
 router.put('/post/:postId/comment/:id', commentController.updateComment);
 router.delete('/post/:postId/comment/:id', commentController.deleteComment);
 

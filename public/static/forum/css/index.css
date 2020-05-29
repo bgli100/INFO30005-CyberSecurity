@@ -1,0 +1,10 @@
+.num-span{
+    border: 2px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 3%;
+    min-width: 4%;
+    border-color: #ccc;
+    border-radius: 5px;
+}

@@ -1,7 +1,7 @@
 //dont need react router is so non-light-weight
 //ES5 only whitout BABEL
 var routes = {
-    ['forum']: 'forum/App.js'
+    ['']: '/static/forum/js/post.jsx'
 };
 ; (function () {
         $(document).ready(ready)
@@ -28,4 +28,4 @@ var routes = {
             window.addEventListener('hashchange', onHashchange)
             onHashchange()
         }
-    })();
+})();
