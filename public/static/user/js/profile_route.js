@@ -42,7 +42,6 @@ window.loadJSX = function (arr, callback) {
                     return
                 }
                 window.injectJS(routes[hash], function (code) {
-                    console.log(code)
                     eval(code)
                 });
             }

@@ -340,29 +340,7 @@ class App extends React.Component {
     });
   };
 
-  // hide the sign in/ sign out bar and the home link
-  signInStatus = () => {
-    $.ajax({
-      url: "/user/checkcookie",
-      mehtod: "GET",
-    }).then((res) => {
-      if (res && !res.error) {
-        this.setState({
-          cookie_id: res._id,
-        });
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").hide();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
-      } else {
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").hide();
-      }
-    });
-  };
   componentDidMount() {
-    this.signInStatus();
     this.setNavItemList();
     this.getProfile();
     this.getComments();

@@ -9,17 +9,10 @@ const CommentItem = ({ item }) => (
         data-original-title=""
         title=""
       >
-        <div>
-          <img
-            alt="Image placeholder"
-            src={item.icon}
-            class="avatar rounded-circle"
-          />
-        </div>
         <div class="flex-fill ml-3">
           <div class="h6 text-sm mb-0">
-            {item.user}
-            <small class="float-right text-muted">{item.time}</small>
+            {item.userName}
+            <small class="float-right text-muted">{new Date(item.time).toLocaleString()}</small>
           </div>
           <p class="text-sm lh-140 mb-0">{item.content}</p>
         </div>
@@ -122,16 +115,15 @@ class App extends React.Component {
         }, 800);
         return;
       }
-      console.log(res);
-      for (var c of res.comment){
+      for (let i = 0; i < res.comment.length; i++){
         $.ajax({
-          url: "/user/" + c.user,
+          url: "/user/" + res.comment[i].user,
           method: "GET"
-        }).then((res) => {
-          c.user = res.userName;
+        }).then((res2) => {
+          res.comment[i].userName = res2.userName;
+          this.setState({ post: res });
         });
       }
-      this.setState({ post: res });
     });
   };
 
@@ -144,15 +136,8 @@ class App extends React.Component {
         this.setState({
           cookie_id: res._id,
         });
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").hide();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
         $("#comment").show();
       } else {
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").hide();
         $("#comment").hide();
       }
     });
@@ -161,13 +146,13 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <section class="pt-5 bg-section-secondary" style={{ minHeight: 900 }}>
+        <section class="pt-5 bg-section-secondary">
           <div class="container">
             <div class="card-header">
-              <h3>{this.state.post.title}</h3>
-              <button>like</button>
+              <h3>{this.state.post.title}    <button>like</button></h3>
+              <p>{this.state.post.content}</p>
             </div>
-            <p>{this.state.post.content}</p>
+            
             <div class="card-header">
               <h6>Comments</h6>
             </div>
@@ -178,15 +163,21 @@ class App extends React.Component {
             ))}
           </div>
         </section>
-        <section class="form-group" id="comment">
-          <label class="form-control-label">Your Comment</label>
-          <textarea class="form-control" placeholder="Please enter your comment" rows="3"
-            onChange={(e) => {
-              this.setState({ comment_enter: e.target.value });
-            }} />
-          <button type="button" class="btn btn-primary btn-sm" onClick={() => this.submitComment()}>
-            Submit
-          </button>
+        <section class="pt-5 bg-section-secondary form-group" style={{ display: 'none'}} id="comment">
+          <div class="container">
+            <div class="card-header">
+              <label class="form-control-label">Your Comment</label>
+              <textarea class="form-control" placeholder="Please enter your comment" rows="3"
+                onChange={(e) => {
+                  this.setState({ comment_enter: e.target.value });
+                }} />
+            </div>
+            <div class="card-header">
+              <button type="button" class="btn btn-primary btn-sm" onClick={() => this.submitComment()}>
+                Submit
+              </button>
+            </div>
+          </div>
         </section>
       </div>
     );

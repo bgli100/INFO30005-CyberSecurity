@@ -42,7 +42,7 @@ html
                 ul.navbar-nav.align-items-center.mx-auto
                     li.nav-item
                       a.nav-link(href='/forum#all') Forum
-                    li.nav-item
+                    li.nav-item(style='display:none;')
                         script. 
                             $.ajax({url : "/user/checkcookie",method : "GET"}).then(
                                 function (res) {
@@ -53,12 +53,13 @@ html
                 // Right navigation
                 ul.navbar-nav.align-items-lg-center.d-none.d-lg-flex.ml-lg-auto
                     // Auth
-                    li.nav-item
+                    li.nav-item(style='display: none;')
                         a.btn.btn-sm.btn-primary.btn-icon.ml-3(href='/user#login')
                             span.btn-inner--text Sign In
-                    li.nav-item
+                    li.nav-item(style='display: none;')
                         a.nav-link(href='/user#login', onclick='javascript:$.ajax({url : "/user/logout",method : "GET"})')
                             | Sign Out
 
-
+    script
+        include check-login.js
 block content

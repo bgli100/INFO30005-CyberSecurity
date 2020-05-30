@@ -91,6 +91,7 @@ const getPost = (req, res) => {
             return;
         }
         commentController.getComment(id, (comment) => {
+            console.log(comment);
             doc = doc.toObject();
             doc.comment = comment ? comment : [];
             res.json(doc);
