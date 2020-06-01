@@ -1,7 +1,8 @@
 class App extends React.Component {
     state = {
         title: '',
-        content: ''
+        content: '',
+        tag: ''
     };
 
     toast = ({ type = "success", message = "", duration = 2000 }) => {
@@ -26,32 +27,32 @@ class App extends React.Component {
     };
 
     // hide the sign in/ sign out bar and the home link
-  signInStatus = () => {
-    $.ajax({
-      url: "/user/checkcookie",
-      mehtod: "GET",
-    }).then((res) => {
-      if (res && !res.error) {
-        this.setState({
-          cookie_id: res._id,
-        });
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").hide();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
-      } else {
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").hide();
-        this.toast({
-            type: 'error',
-            message: 'You have not logged in!'
-        });
-        setTimeout(()=>{
-            history.pushState("", document.title, window.location.pathname);
-            window.location.href = "/user#login";
-        },800);
-      }
+    signInStatus = () => {
+        $.ajax({
+            url: "/user/checkcookie",
+            mehtod: "GET",
+        }).then((res) => {
+            if (res && !res.error) {
+                this.setState({
+                    cookie_id: res._id,
+                });
+                $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").hide();
+                $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").show();
+                $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
+                $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
+            } else {
+                $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();
+                $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();
+                $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").hide();
+                this.toast({
+                    type: 'error',
+                    message: 'You have not logged in!'
+                });
+                // setTimeout(()=>{
+                //     history.pushState("", document.title, window.location.pathname);
+                //     window.location.href = "/user#login";
+                // },800);
+            }
         });
     };
 
@@ -73,23 +74,23 @@ class App extends React.Component {
                     type: 'error',
                     message: 'Post Error! Please re-log in and try again'
                 });
-                setTimeout(()=>{
+                setTimeout(() => {
                     window.location.reload();
-                },1000);
+                }, 1000);
             }
             else {
                 this.toast({
                     type: 'success',
                     message: 'You have successfully submit a new post'
                 });
-                setTimeout(()=>{
+                setTimeout(() => {
                     window.location.hash = "#all";
-                },1000);
+                }, 1000);
             }
         });
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.signInStatus();
     }
     render() {
@@ -101,16 +102,46 @@ class App extends React.Component {
                             <h1>New Post</h1>
                         </div>
                         <div class="form-group">
-                            <label class="form-control-label">Title</label>
-                            <input class="form-control" type="text" placeholder="Please enter your title" 
-                            onChange={(e) => {
-                                this.setState({title: e.target.value});}} />
-                            <label class="form-control-label">Content</label>
-                            <textarea class="form-control" placeholder="Please enter your content" rows="3"
-                            onChange={(e) => {
-                                this.setState({content: e.target.value});}} />
+                            <div style={{ marginBottom: 10 }}>
+                                <label class="form-control-label">Title</label>
+                                <input class="form-control" type="text" placeholder="Please enter your title"
+                                    onChange={(e) => {
+                                        this.setState({ title: e.target.value });
+                                    }}
+                                />
+                            </div>
+                            <div style={{ marginBottom: 10 }}>
+                                <label class="form-control-label">Tag</label>
+                                <select class="custom-select" onChange={e => this.setState({ tag: e.target.value })}>
+                                    <option selected>Open select the item</option>
+                                    <option value="1">Miranda</option>
+                                    <option value="2">Tong</option>
+                                    <option value="3">Patrick</option>
+                                    <option value="4">Tong</option>
+                                </select>
+                            </div>
+
+                            {/* <div class="btn-group">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Secondary</button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Action</a>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Separated link</a>
+                                </div>
+                            </div> */}
+
+                            <div style={{ marginBottom: 10 }}>
+                                <label class="form-control-label">Content</label>
+                                <textarea class="form-control" placeholder="Please enter your content" rows="3"
+                                    onChange={(e) => {
+                                        this.setState({ content: e.target.value });
+                                    }}
+                                />
+                            </div>
                         </div>
-                        <button type="button" class="btn btn-primary btn-sm" onClick={()=>this.handleSubmit()}>
+                        <button type="button" class="btn btn-primary btn-sm" onClick={() => this.handleSubmit()}>
                             Submit
                         </button>
                     </div>

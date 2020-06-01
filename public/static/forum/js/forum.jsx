@@ -1,8 +1,15 @@
 const PostItem = ({ item, index }) => (
-  <a href={"/forum/post/"+item._id+"/content"} class="list-group-item list-group-item-action active" style={{ display: 'flex' }}>
-    <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '3%', minWidth: '4%', borderRadius: 5, border: '2px solid #ccc' }}>{index}</span>
+  <a href={"/forum/post/" + item._id + "/content"} class="list-group-item list-group-item-action active" style={{ display: 'flex' }}>
+    <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '3%', minWidth: '4%', borderRadius: 5, border: '2px solid #ccc' }}>{item.commentCount}</span>
     <div style={{ marginLeft: 10 }}>
       <h6>{item.title}</h6>
+    </div>
+    <div class="h6 float-right" style={{ position: 'absolute', right: 200 }}>
+      {item.userName}
+    </div>
+
+    <div class="h6 float-right" style={{ position: 'absolute', right: 0 }}>
+      <small class="float-right text-muted">{new Date(item.time).toLocaleString()}</small>
     </div>
   </a>
 );
@@ -15,7 +22,7 @@ class App extends React.Component {
         _id: 1,
       },
     ],
-    hideCreate : false,
+    hideCreate: false,
   };
 
   componentDidMount() {
@@ -52,7 +59,22 @@ class App extends React.Component {
       url: "/forum/all",
       method: "GET",
     }).then((res) => {
-      this.setState({ posts: res })
+      for (let i = 0; i < res.length; i++) {
+        $.ajax({
+          url: "/user/" + res[i].user,
+          method: "GET"
+        }).then((res2) => {
+          res[i].userName = res2.userName;
+          this.setState({ posts: res });
+        });
+        $.ajax({
+          url: "/forum/post/" + res[i]._id,
+          method: "GET"
+        }).then((res2) => {
+          res[i].commentCount = res2.comment.length;
+          this.setState({ posts: res });
+        });
+      }
     });
   };
   // hide the sign in/ sign out bar and the home link
@@ -67,13 +89,12 @@ class App extends React.Component {
         });
         $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").hide();
         $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
+        $("#navbar-main-collapse>ul.mx-auto:nth-child(2)>li:nth-child(2)").show();
         $("#newpost").show();
       } else {
         $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();
         $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").hide();
+        $("#navbar-main-collapse>ul.mx-auto:nth-child(2)>li:nth-child(2)").hide();
         $("#newpost").hide();
       }
     });
@@ -98,7 +119,6 @@ class App extends React.Component {
                 <button type="button" class="btn btn-primary btn-sm" id="newpost">
                   New Post
                 </button>
-                {}
               </a>
             </div>
           </div>

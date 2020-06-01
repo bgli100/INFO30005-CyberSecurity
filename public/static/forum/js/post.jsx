@@ -1,30 +1,25 @@
 const CommentItem = ({ item }) => (
   <div>
-    <a class="list-group-item list-group-item-action">
+    <a class='list-group-item list-group-item-action'>
       <div
-        class="d-flex align-items-center"
-        data-toggle="tooltip"
-        data-placement="right"
-        data-title="2 hrs ago"
-        data-original-title=""
-        title=""
+        class='d-flex align-items-center'
+        data-toggle='tooltip'
+        data-placement='right'
+        data-title='2 hrs ago'
+        data-original-title=''
+        title=''
       >
-        <div>
-          <img
-            alt="Image placeholder"
-            src={item.icon}
-            class="avatar rounded-circle"
-          />
-        </div>
-        <div class="flex-fill ml-3">
-          <div class="h6 text-sm mb-0">
-            {item.user}
-            <small class="float-right text-muted">{item.time}</small>
+        <div class='flex-fill ml-3'>
+          <div class='h6 text-sm mb-0'>
+            {item.userName}
+            <small class='float-right text-muted'>
+              {new Date(item.time).toLocaleString()}
+            </small>
           </div>
-          <p class="text-sm lh-140 mb-0">{item.content}</p>
+          <p class='text-sm lh-140 mb-0'>{item.content}</p>
         </div>
         <div>
-          <button> like</button>
+          <img src='../../../assets/img/svg/icons/Like_1_.svg' style={{ width: 25 }} />
         </div>
       </div>
     </a>
@@ -37,7 +32,7 @@ class App extends React.Component {
       title: "",
       content: "",
       _id: 1,
-      comment: []
+      comment: [],
     },
   };
 
@@ -49,64 +44,64 @@ class App extends React.Component {
   toast = ({ type = "success", message = "", duration = 2000 }) => {
     let caseMap = {
       error: ({ type, message }) => (
-        <div className="alert alert-danger" role="alert">
+        <div className='alert alert-danger' role='alert'>
           <strong>{message}</strong>
         </div>
       ),
       success: ({ type, message }) => (
-        <div className="alert alert-success" role="alert">
+        <div className='alert alert-success' role='alert'>
           <strong>{message}</strong>
         </div>
       ),
     };
-    let modalToast = document.createElement('div')
-    document.body.appendChild(modalToast)
+    let modalToast = document.createElement("div");
+    document.body.appendChild(modalToast);
     ReactDOM.render(caseMap[type]({ type, message }), modalToast);
     setTimeout(() => {
-      modalToast.remove()
+      modalToast.remove();
     }, duration);
   };
 
   submitComment = () => {
     const pathname = window.location.pathname;
-    const id = pathname.split('/')[3];
+    const id = pathname.split("/")[3];
     const content = this.state.comment_enter;
 
-    if (!content){
+    if (!content) {
       this.toast({
-        type: 'error',
-        message: 'Please enter something!'
+        type: "error",
+        message: "Please enter something!",
       });
       return;
     }
     $.ajax({
       url: "/forum/post/" + id + "/comment",
       method: "PUT",
-      data : {
-        content : content
-      }
+      data: {
+        content: content,
+      },
     }).then((res) => {
       if (!res || res.error) {
         this.toast({
-          type: 'error',
-          message: 'error occurs when posting comment'
+          type: "error",
+          message: "error occurs when posting comment",
         });
         return;
       }
       this.toast({
-        type: 'success',
-        message: 'You have successfully entered a comment!'
+        type: "success",
+        message: "You have successfully entered a comment!",
       });
       window.location.reload();
     });
   };
   /**
- * @description getPostById
- */
+   * @description getPostById
+   */
   getPostById = () => {
     const pathname = window.location.pathname;
 
-    const id = pathname.split('/')[3];
+    const id = pathname.split("/")[3];
 
     $.ajax({
       url: "/forum/post/" + id,
@@ -114,24 +109,23 @@ class App extends React.Component {
     }).then((res) => {
       if (!res || res.error) {
         this.toast({
-          type: 'error',
-          message: 'Invalid post ID path'
+          type: "error",
+          message: "Invalid post ID path",
         });
         setTimeout(() => {
-          this.window.href = '/404';
+          this.window.href = "/404";
         }, 800);
         return;
       }
-      console.log(res);
-      for (var c of res.comment){
+      for (let i = 0; i < res.comment.length; i++) {
         $.ajax({
-          url: "/user/" + c.user,
-          method: "GET"
-        }).then((res) => {
-          c.user = res.userName;
+          url: "/user/" + res.comment[i].user,
+          method: "GET",
+        }).then((res2) => {
+          res.comment[i].userName = res2.userName;
+          this.setState({ post: res });
         });
       }
-      this.setState({ post: res });
     });
   };
 
@@ -144,15 +138,8 @@ class App extends React.Component {
         this.setState({
           cookie_id: res._id,
         });
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").hide();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
         $("#comment").show();
       } else {
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").hide();
         $("#comment").hide();
       }
     });
@@ -161,14 +148,22 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <section class="pt-5 bg-section-secondary" style={{ minHeight: 900 }}>
-          <div class="container">
-            <div class="card-header">
-              <h3>{this.state.post.title}</h3>
-              <button>like</button>
+        <section class='pt-5 bg-section-secondary'>
+          <div class='container'>
+            <div class='card-header'>
+              <h3>
+                {this.state.post.title}
+                <button type="button" class="btn btn-primary btn-icon" style={{ padding: '5px 15px 5px 15px', marginLeft: '5px' }}>
+                  <span class="btn-inner--icon" >
+                    <img src='../../../assets/img/svg/icons/Like_1_.svg' style={{ width: 20, marginBottom: 4 }} />
+                  </span>
+                  <span class="btn-inner--text">Like</span>
+                </button>
+              </h3>
+              <p>{this.state.post.content}</p>
             </div>
-            <p>{this.state.post.content}</p>
-            <div class="card-header">
+
+            <div class='card-header'>
               <h6>Comments</h6>
             </div>
             {this.state.post.comment.map((item, index) => (
@@ -178,19 +173,36 @@ class App extends React.Component {
             ))}
           </div>
         </section>
-        <section class="form-group" id="comment">
-          <label class="form-control-label">Your Comment</label>
-          <textarea class="form-control" placeholder="Please enter your comment" rows="3"
-            onChange={(e) => {
-              this.setState({ comment_enter: e.target.value });
-            }} />
-          <button type="button" class="btn btn-primary btn-sm" onClick={() => this.submitComment()}>
-            Submit
-          </button>
+        <section
+          class='pt-5 bg-section-secondary form-group'
+        // style={{ display: "none" }}
+        >
+          <div class='container'>
+            <div class='card-header'>
+              <label class='form-control-label'>Your Comment</label>
+              <textarea
+                class='form-control'
+                placeholder='Please enter your comment'
+                rows='3'
+                onChange={(e) => {
+                  this.setState({ comment_enter: e.target.value });
+                }}
+              />
+            </div>
+            <div class='card-header' style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                type='button'
+                class='btn btn-primary btn-sm'
+                onClick={() => this.submitComment()}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
         </section>
       </div>
     );
   }
 }
 
-ReactDOM.render(<App />, document.getElementById("root"))
+ReactDOM.render(<App />, document.getElementById("root"));
