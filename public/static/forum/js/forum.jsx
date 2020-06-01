@@ -87,14 +87,8 @@ class App extends React.Component {
         this.setState({
           cookie_id: res._id,
         });
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").hide();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto:nth-child(2)>li:nth-child(2)").show();
         $("#newpost").show();
       } else {
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();
-        $("#navbar-main-collapse>ul.mx-auto:nth-child(2)>li:nth-child(2)").hide();
         $("#newpost").hide();
       }
     });

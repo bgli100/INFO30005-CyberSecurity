@@ -22,19 +22,28 @@ const getRating = (type) => {
                     $sum: "$rating"
                 }
             }
-        }], (_err, doc) => {
-            res.json({
-                _id: id,
-                total: doc.total ? doc.total : 0
-            });
+        }], (err, doc) => {
+            if(!err && doc) {
+                if(doc.length > 0) {
+                    res.json(doc[0]);
+                } else {
+                    res.json({
+                        total: 0
+                    });
+                }
+            } else {
+                res.json({
+                    error: 'get rating failed'
+                });
+            }
         });
     };
 };
 
 const giveRating = (type) => {
-    return (req, res) => {
+    return async (req, res) => {
         const id = req.params.id;
-        const userId = user.getUserIDFromCookie(req, res);
+        const userId = await user.getUserIDFromCookie(req, res);
         if(!param.validateBody(req, res, ['rating']) ||
            !param.validateId(res, id) ||
            !userId) {
@@ -51,8 +60,16 @@ const giveRating = (type) => {
             rating: req.body.rating
         }, {
             upsert: true // if not exist, insert one
-        }, (_err, doc) => {
-            res.json(doc);
+        }, (err, doc) => {
+            if(!err && doc) {
+                res.json({
+                    updated: doc.upserted ? true : doc.nModified > 0
+                });
+            } else {
+                res.json({
+                    error: 'update rating failed'
+                });
+            }
         });
     };
 };

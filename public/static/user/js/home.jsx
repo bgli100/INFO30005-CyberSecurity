@@ -37,7 +37,6 @@ const HomeInfoItem = ({ item }) => (
   <div className="row align-items-center">
     <div className="col">
       <h6 className="text-sm mb-0">
-        <i className="fab fa-facebook mr-2"></i>
         {item.name}
       </h6>
     </div>
@@ -58,17 +57,10 @@ const CommentItem = ({ item }) => (
         data-original-title=""
         title=""
       >
-        <div>
-          <img
-            alt="Image placeholder"
-            src={item.icon}
-            class="avatar rounded-circle"
-          />
-        </div>
         <div class="flex-fill ml-3">
           <div class="h6 text-sm mb-0">
             {item.userName}
-            <small class="float-right text-muted">{item.createTime}</small>
+            <small class="float-right text-muted">{new Date(item.createTime).toLocaleString()}</small>
           </div>
           <p class="text-sm lh-140 mb-0">{item.content}</p>
         </div>
@@ -143,9 +135,8 @@ class App extends React.Component {
       email: "",
     },
     description: {
-      followers: 100,
-      following: 20,
-      rating: 39,
+      comments: 0,
+      rating: 0,
     },
     commentList: [],
     postList: [],
@@ -185,20 +176,25 @@ class App extends React.Component {
         return;
       }
       let commentList = [];
+      let totalRating = 0;
       let comment = {
-        icon: "/assets/img/theme/light/person-4.jpg",
-        createTime: "",
-        content: "",
+        time: '',
+        content: '',
+        rating: 0
       };
       for (comment of res) {
         commentList.push({
-          icon: "/assets/img/theme/light/person-4.jpg",
           createTime: comment.time,
           content: comment.content,
         });
+        totalRating += comment.rating;
       }
       this.setState({
         commentList: commentList,
+        description: {
+          comments: commentList.length,
+          rating: totalRating,
+        }
       });
     });
   };
@@ -353,14 +349,6 @@ class App extends React.Component {
             <div class="row justify-content-center">
               <div class="col-lg-9">
                 <div class="row align-items-center">
-                  <div class="col-auto">
-                    {/* <!-- Avatar --> */}
-                    <img
-                      alt="Image placeholder"
-                      src="../../assets/img/theme/light/person-auth.jpg"
-                      class="avatar avatar-xl rounded-circle"
-                    />
-                  </div>
                   <div class="col ml-n3 ml-md-n2">
                     {/* <!-- Title --> */}
                     <h2 class="mb-0">{this.state.profile.userName}</h2>

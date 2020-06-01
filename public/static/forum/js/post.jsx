@@ -1,28 +1,71 @@
-const CommentItem = ({ item }) => (
-  <div>
-    <a class="list-group-item list-group-item-action">
-      <div
-        class="d-flex align-items-center"
-        data-toggle="tooltip"
-        data-placement="right"
-        data-title="2 hrs ago"
-        data-original-title=""
-        title=""
-      >
-        <div class="flex-fill ml-3">
-          <div class="h6 text-sm mb-0">
-            {item.userName}
-            <small class="float-right text-muted">{new Date(item.time).toLocaleString()}</small>
+class CommentItem extends React.Component {
+  state = {
+    rating: 0
+  };
+
+  constructor(arg) {
+    super();
+    this.state.rating = arg.item.rating;
+  }
+
+  componentDidMount = () => {
+    this.getRating();
+  };
+
+  getRating = () => {
+    $.ajax({
+      url: "/forum/post/" + this.props.item.post + "/comment/" + this.props.item._id + "/rating",
+      method: "GET"
+    }).then((res) => {
+      this.setState({rating: res.total});
+    });
+  };
+
+  render() {
+    return (
+      <div>
+      <a class="list-group-item list-group-item-action">
+        <div
+          class="d-flex align-items-center"
+          data-toggle="tooltip"
+          data-placement="right"
+          data-title="2 hrs ago"
+          data-original-title=""
+          title=""
+        >
+          <div class="flex-fill ml-3">
+            <div class="h6 text-sm mb-0">
+              {this.props.item.userName}
+              <small class="float-right text-muted">{new Date(this.props.item.time).toLocaleString()}
+                <br/>
+                <button class="btn btn-primary btn-sm" onClick={() => this.likeComment(this.props.item._id)}> like</button>
+                <p class="text-sm lh-140 mb-0">rating: {this.state.rating}</p>
+              </small>
+            </div>
+            <p class="text-sm lh-140 mb-0">{this.props.item.content}</p>
           </div>
-          <p class="text-sm lh-140 mb-0">{item.content}</p>
         </div>
-        <div>
-          <button> like</button>
-        </div>
-      </div>
-    </a>
-  </div>
-);
+      </a>
+    </div>
+    );
+  }
+  
+  likeComment = (cid) => {
+    const pathname = window.location.pathname;
+    const pid = pathname.split('/')[3];
+    $.ajax({
+      url: "/forum/post/" + pid + "/comment/" + cid + "/rating",
+      method: "PUT",
+      data : {
+        rating: 1
+      }
+    }).then((res) => {
+      if (res && !res.error && res.updated) {
+        this.setState({rating: this.state.rating + 1});
+      }
+    });
+  }
+} 
 
 class App extends React.Component {
   state = {
@@ -59,6 +102,7 @@ class App extends React.Component {
       modalToast.remove()
     }, duration);
   };
+
 
   submitComment = () => {
     const pathname = window.location.pathname;
@@ -149,7 +193,7 @@ class App extends React.Component {
         <section class="pt-5 bg-section-secondary">
           <div class="container">
             <div class="card-header">
-              <h3>{this.state.post.title}    <button>like</button></h3>
+              <h3>{this.state.post.title}</h3>
               <p>{this.state.post.content}</p>
             </div>
             

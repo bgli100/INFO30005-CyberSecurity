@@ -3,6 +3,7 @@ const User = mongoose.model('users');
 const ObjectId = mongoose.mongo.ObjectId;
 const Comment = mongoose.model('comments');
 const Post = mongoose.model('posts');
+const Rating = mongoose.model('ratings');
 const crypto = require('crypto');
 const SALT = "DADA";
 const param = require('../../models/param');
@@ -201,7 +202,7 @@ const getPostsByUser = (req, res) => {
             });
             return;
         }
-        Post.find({user: ObjectId(id)}, (_err, doc)=>{
+        Post.find({user: ObjectId(id)}, (_err, doc) => {
             if (!doc) {
                 res.json({});
                 return;
@@ -230,21 +231,38 @@ const getCommentsByUser = (req, res) => {
             });
             return;
         }
-        Comment.find({user: ObjectId(id)}, (_err, doc) =>{
-            if (!doc) {
+        Comment.find({user: ObjectId(id)}, async (_err, doc) => {
+            if (!doc || doc.length == 0) {
                 res.json({});
                 return;
             }
-        }).lean()
-          .then((x) =>{
-              res.json(x);
-          });
+            
+            data = [];
+
+            for(var i = 0; i < doc.length; i++) {
+                data[i] = doc[i].toObject();
+                var sum = await Rating.aggregate([{
+                    $match: { 
+                        target: ObjectId(doc[i]._id),
+                        type: 'comment'
+                    }
+                }, {
+                    $group: {
+                        _id: ObjectId(doc[i]._id),
+                        total: {
+                            $sum: "$rating"
+                        }
+                    }
+                }]);
+                data[i].rating = sum.length == 0 ? 0 : sum[0].total;
+            }
+            res.json(data);
+        })
     });
 };
 
 const getUserIDFromCookie = async (req, res, silent = false) => {
     const id = req.cookies._userID;
-    console.log(id);
     if(!id || !param.validateId(res, id, silent)) {
         return false;
     }
