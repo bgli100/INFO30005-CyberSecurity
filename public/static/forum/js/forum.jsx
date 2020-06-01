@@ -99,7 +99,7 @@ class App extends React.Component {
         <section class="pt-5 bg-section-secondary" style={{ minHeight: 900 }}>
           <div class="container">
             <div class="card-header">
-              <h3>Forum 1</h3>
+              <h3>Forum for Cyber Security Knowledge Discussion</h3>
             </div>
             <div class="list-group">
               {this.state.posts.map((item, index) => (

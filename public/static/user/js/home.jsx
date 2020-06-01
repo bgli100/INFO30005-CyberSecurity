@@ -189,6 +189,10 @@ class App extends React.Component {
         });
         totalRating += comment.rating;
       }
+      commentList.sort((a, b) => {
+        return new Date(b.createTime) - new Date(a.createTime);
+      });
+      commentList.slice(0, 5);
       this.setState({
         commentList: commentList,
         description: {
