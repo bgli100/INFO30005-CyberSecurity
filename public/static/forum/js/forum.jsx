@@ -1,18 +1,39 @@
-const PostItem = ({ item, index }) => (
-  <a href={"/forum/post/"+item._id+"/content"} class="list-group-item list-group-item-action active" style={{ display: 'flex' }}>
-    <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '3%', minWidth: '4%', borderRadius: 5, border: '2px solid #ccc' }}>{item.commentCount}</span>
-    <div style={{ marginLeft: 10 }}>
-      <h6>{item.title}</h6>
-    </div>
-    <div class="h6 float-right" style={{position: 'absolute', right: 200}}>
-      {item.userName}
-    </div>
-          
-    <div class="h6 float-right" style={{position: 'absolute', right: 0}}>
-      <small class="float-right text-muted">{new Date(item.time).toLocaleString()}</small>
-    </div>
-  </a>
-);
+class PostItem extends React.Component {
+  
+  deletePost(id, parent) {
+    return () => {
+      $.ajax({
+        url: "/forum/post/" + id,
+        method: "DELETE",
+      }).then((res) => {
+        if(res && !res.error) window.location.reload();
+      });
+    };
+  }
+
+  render() {
+    return (
+      <div class="list-group-item list-group-item-action active" style={{ display: 'flex' }}>
+        <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '3%', minWidth: '4%', borderRadius: 5, border: '2px solid #ccc' }}>{this.props.item.commentCount}</span>
+        <div style={{ marginLeft: 10 }}>
+          <a href={"/forum/post/"+this.props.item._id+"/content"} ><h6>{this.props.item.title}</h6></a>
+        </div>
+        <div class="h6 float-right" style={{position: 'absolute', right: this.props.isAdmin ? 310 : 210}}>
+          {this.props.item.userName}
+        </div>
+        { this.props.isAdmin ?
+          <button type="button" class="btn btn-primary btn-sm"style={{position: 'absolute', right: 10}} onClick={this.deletePost(this.props.item._id, this.props.parent)}>
+            Delete
+          </button>
+          : ''
+        }
+        <div class="h6 float-right" style={{position: 'absolute', right: this.props.isAdmin ? 110 : 10}}>
+          <small class="float-right text-muted">{new Date(this.props.item.time).toLocaleString()}</small>
+        </div>
+      </div>
+    );
+  }
+}
 
 class App extends React.Component {
   state = {
@@ -86,6 +107,7 @@ class App extends React.Component {
       if (res && !res.error) {
         this.setState({
           cookie_id: res._id,
+          userClass: res.class
         });
         $("#newpost").show();
       } else {
@@ -104,7 +126,7 @@ class App extends React.Component {
             <div class="list-group">
               {this.state.posts.map((item, index) => (
                 <React.Fragment>
-                  <PostItem item={item} index={index} />
+                  <PostItem parent={this} item={item} index={index} isAdmin={this.state.userClass ? (this.state.userClass == 'admin') : false } />
                 </React.Fragment>
               ))}
             </div>

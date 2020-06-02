@@ -285,7 +285,7 @@ const getAdminIDFromCookie = async (req, res) => {
     }
 
     const result = await User.findOne({
-        id: ObjectId(id),
+        _id: ObjectId(id),
         class: 'admin'
     });
 

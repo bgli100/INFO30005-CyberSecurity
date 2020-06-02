@@ -3,6 +3,17 @@ class CommentItem extends React.Component {
     rating: 0
   };
 
+  deleteComment(item, parent) {
+    return () => {
+      $.ajax({
+        url: "/forum/post/" + item.post + "/comment/" + this.props.item._id,
+        method: "DELETE",
+      }).then((res) => {
+        if(res && !res.error) window.location.reload();
+      });
+    };
+  }
+
   constructor(arg) {
     super();
     this.state.rating = arg.item.rating;
@@ -24,7 +35,7 @@ class CommentItem extends React.Component {
   render() {
     return (
       <div>
-      <a class="list-group-item list-group-item-action">
+      <a class="list-group-item list-group-item-action" style={{minHeight: 100}}>
         <div
           class="d-flex align-items-center"
           data-toggle="tooltip"
@@ -36,11 +47,17 @@ class CommentItem extends React.Component {
           <div class="flex-fill ml-3">
             <div class="h6 text-sm mb-0">
               {this.props.item.userName}
-              <small class="float-right text-muted">{new Date(this.props.item.time).toLocaleString()}
+              <small class="float-right text-muted">{new Date(this.props.item.time).toLocaleString()}</small>
                 <br/>
-                <button class="btn btn-primary btn-sm" onClick={() => this.likeComment(this.props.item._id)}> like</button>
-                <p class="text-sm lh-140 mb-0">rating: {this.state.rating}</p>
-              </small>
+                <button class="btn btn-primary btn-sm" style={{position: 'absolute', right: this.props.isAdmin ? 110 : 10}} onClick={() => this.likeComment(this.props.item._id)}> like</button>
+                { this.props.isAdmin ?
+                  <button type="button" class="btn btn-primary btn-sm" style={{position: 'absolute', right: 10}} onClick={this.deleteComment(this.props.item, this.props.parent)}>
+                    Delete
+                  </button>
+                  : ''
+                }
+                <p class="text-sm lh-140 mb-0" style={{position: 'absolute', right: this.props.isAdmin ? 210 : 110}}>rating: {this.state.rating}</p>
+              
             </div>
             <p class="text-sm lh-140 mb-0">{this.props.item.content}</p>
           </div>
@@ -75,6 +92,7 @@ class App extends React.Component {
       _id: 1,
       comment: []
     },
+    userClass: ''
   };
 
   componentDidMount() {
@@ -159,6 +177,9 @@ class App extends React.Component {
         }, 800);
         return;
       }
+      if(res.comment.length == 0) {
+        this.setState({ post: res });
+      }
       for (let i = 0; i < res.comment.length; i++){
         $.ajax({
           url: "/user/" + res.comment[i].user,
@@ -179,6 +200,7 @@ class App extends React.Component {
       if (res && !res.error) {
         this.setState({
           cookie_id: res._id,
+          userClass: res.class
         });
         $("#comment").show();
       } else {
@@ -202,7 +224,7 @@ class App extends React.Component {
             </div>
             {this.state.post.comment.map((item, index) => (
               <React.Fragment>
-                <CommentItem item={item} />
+                <CommentItem parent={this} item={item} isAdmin={this.state.userClass ? (this.state.userClass == 'admin') : false} />
               </React.Fragment>
             ))}
           </div>
