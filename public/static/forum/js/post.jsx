@@ -46,7 +46,9 @@ class CommentItem extends React.Component {
         >
           <div class="flex-fill ml-3">
             <div class="h6 text-sm mb-0">
-              {this.props.item.userName}
+              <a href = {"/user/"+this.props.item.user+"/profile"} id = "userName">
+                {this.props.item.userName}
+              </a>
               <small class="float-right text-muted">{new Date(this.props.item.time).toLocaleString()}</small>
                 <br/>
                 <button class="btn btn-primary btn-sm" style={{position: 'absolute', right: this.props.isAdmin ? 110 : 10}} onClick={() => this.likeComment(this.props.item._id)}> like</button>
@@ -177,6 +179,12 @@ class App extends React.Component {
         }, 800);
         return;
       }
+      $.ajax({
+        url: "/user/" + res.user,
+        method: "GET"
+      }).then((res3)=>{
+        res.userName = res3.userName;
+      })
       if(res.comment.length == 0) {
         this.setState({ post: res });
       }
@@ -216,6 +224,7 @@ class App extends React.Component {
           <div class="container">
             <div class="card-header">
               <h3>{this.state.post.title}</h3>
+              <a href={"/user/"+this.state.post.user+"/profile"}>{"By " + this.state.post.userName}</a>
               <p>{this.state.post.content}</p>
             </div>
             
