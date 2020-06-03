@@ -189,14 +189,15 @@ class App extends React.Component {
         });
         totalRating += comment.rating;
       }
+      let commentQty = commentList.length;
       commentList.sort((a, b) => {
         return new Date(b.createTime) - new Date(a.createTime);
       });
-      commentList.slice(0, 5);
+      commentList = commentList.slice(0, 5);
       this.setState({
         commentList: commentList,
         description: {
-          comments: commentList.length,
+          comments: commentQty,
           rating: totalRating,
         }
       });
@@ -217,17 +218,19 @@ class App extends React.Component {
       }
       let postList = [];
       let post = {
-        icon: "/assets/img/theme/light/person-4.jpg",
         createTime: "",
         content: "",
       };
       for (post of res) {
         postList.push({
-          icon: "/assets/img/theme/light/person-4.jpg",
           createTime: post.time,
           content: post.content,
         });
       }
+      postList.sort((a, b) => {
+        return new Date(b.createTime) - new Date(a.createTime);
+      });
+      postList = postList.slice(0, 5);
       this.setState({
         postList
       });
@@ -344,6 +347,7 @@ class App extends React.Component {
     this.setNavItemList();
     this.getProfile();
     this.getComments();
+    this.getPosts();
   }
   render() {
     return (

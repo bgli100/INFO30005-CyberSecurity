@@ -22,13 +22,16 @@
       </div>
 
       <div class="card-header">
-        <h6>Activity</h6>
+        <h6>Activity - Comments</h6>
       </div>
       {context.state.commentList.map((item, index) => (
         <React.Fragment>
           <CommentItem item={item} />
         </React.Fragment>
       ))}
+      <div class="card-header">
+        <h6>Activity - Posts</h6>
+      </div>
       {context.state.postList.map((item, index) => (
         <React.Fragment>
           <CommentItem item={item} />
