@@ -16,14 +16,15 @@ const findAllPost = (_req, res) => {
 
 const createPost = async(req, res) => {
     const userId = await user.getUserIDFromCookie(req, res);
-    if(!param.validateBody(req, res, ['title', 'content']) ||
+    if(!param.validateBody(req, res, ['title', 'content', 'tag']) ||
        !userId) {
         return;
     }
     const item = {
         title: req.body.title,
         content: req.body.content,
-        user: ObjectId(userId)
+        user: ObjectId(userId),
+        tag: req.body.tag
     };
 
     const data = new Post(item);

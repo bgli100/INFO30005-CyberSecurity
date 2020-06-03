@@ -14,8 +14,9 @@ const validateBody = (req, res, required, silent = false) => {
     for(const k in required) {
         key = required[k];
         switch(key) {
-            case 'content': // post content, comment content, etc.
+            case 'content': // post content/tag, comment content, etc.
             case 'description':
+            case 'tag':
                 flag = req.body[key];
                 if(!flag) msg = "content can not be missing";
                 break;

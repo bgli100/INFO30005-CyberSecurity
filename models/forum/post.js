@@ -6,7 +6,8 @@ let postSchema = new Schema({
     content: {type: String, default: ''},
     user: {type: Schema.Types.ObjectId, required: true},
     time: {type: Date, default: Date.now},
-    lastEdit: {type: Date, default: null}
+    lastEdit: {type: Date, default: null},
+    tag: {type: String, required: true}
 }, {collection: 'Posts'});
 
 mongoose.model('posts', postSchema);
