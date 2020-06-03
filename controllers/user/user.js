@@ -143,44 +143,43 @@ const updateProfile = (req, res) => {
     const new_email = req.body.email;
     const new_description = req.body.description;
     var hasError = false;
-    getUserIDFromCookie(req, res, true).then((id)=>{
-        if(!id) {
+    getUserIDFromCookie(req, res, true).then((uid)=>{
+        if(!uid) {
             console.error("Error, you have not logged in");
             res.json({
                 error: "you have not logged in"
             });
             hasError = true;
-        } else if (id != req.params.id) {
+        } else if (uid != req.params.id) {
             console.error("userInfo unmatched");
             res.json({
                 error: "user information unmatched"
             });
             hasError = true;
         }
-    });
-
-    if (hasError) {
-        return;
-    }
-
-    const id = req.params.id;
-    User.findById(ObjectId(id), (err, doc) =>{
-        if (err || !doc) {
-            console.error('error, authentication error');
-            res.json({
-                error: 'authentication error'
-            });
+        if (hasError) {
             return;
         }
-        if (new_email){
-            doc.email = new_email;
-        }
-        if (new_description){
-            doc.description = new_description;
-        }
-        doc.save();
-        doc = doc.toObject();
-        res.json(doc);
+    
+        const id = req.params.id;
+        User.findById(ObjectId(id), (err, doc) =>{
+            if (err || !doc) {
+                console.error('error, authentication error');
+                res.json({
+                    error: 'authentication error'
+                });
+                return;
+            }
+            if (new_email){
+                doc.email = new_email;
+            }
+            if (new_description){
+                doc.description = new_description;
+            }
+            doc.save();
+            doc = doc.toObject();
+            res.json(doc);
+        });
     });
 };
 
