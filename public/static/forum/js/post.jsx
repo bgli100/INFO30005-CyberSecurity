@@ -184,6 +184,7 @@ class App extends React.Component {
         method: "GET"
       }).then((res3)=>{
         res.userName = res3.userName;
+        this.setState({ post: res });
       })
       if(res.comment.length == 0) {
         this.setState({ post: res });
