@@ -1,3 +1,90 @@
 extends layout
 
 block content
+    style.
+        .bg{
+        position:relative;
+        min-width:1200px;
+        width:100vw;
+        max-width:1366px;
+        margin: 0 auto;
+        }
+        .bg img{
+        display:block;
+        position:relative;
+        width:inherit;
+        min-width:1200px;
+        max-width:1366px;
+        width:100vw;
+        margin: 0 auto;
+        }
+        .bg .title{
+        position:absolute;
+        top:180px;
+        left:50px;
+        width: 600px;
+        height: 58px;
+        font-family: Arial-Black;
+        font-size: 60px;
+        font-weight: normal;
+        font-stretch: normal;
+        letter-spacing: 1px;
+        color: #fcfcfb;
+        }
+        .bg .desc{
+        position:absolute;
+        top:300px;
+        left:50px;
+        width: 397px;
+        height: 112px;
+        font-family: ArialMT;
+        font-size: 12px;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 25px;
+        letter-spacing: 0px;
+        color: #fcfcfb;
+        }
+        .topic{
+            text-align:center;
+            padding: 130px;
+        }
+        .topic h4{
+            text-align:center;
+            padding:10px 0;
+        }
+        .topic .list{
+            padding:0;
+        }
+        .topic .list li{
+            list-style:none;
+            display:inline-block;
+            padding: 40px 30px;
+            margin:10px;
+            background: #efefef;
+            transition:all 0.3s;
+        }
+        .topic .list li:hover{
+            background: #ffffff;
+            box-shadow: 10px 10px 10px 0 gainsboro;
+        }
+        .topic .list li a{
+            text-decoration:none;
+            color:#000;
+        }
+    div.bg
+        img(src="assets/img/index-bg.jpg" alt="" srcset="")
+        span.title Cyber Security
+        article.desc
+            | We are here to help you learn more about cyber security, and prevent from cyber attacks. Our forum module has lots of professional experts in the field of IT. Please feel free to browse everything in our forum.
+            | If you have any question, please do not hesitate to contact us.
+    div.topic 
+        h4 Our Forum
+        ul.list 
+            li 
+                a(href="#") Trouble Shooting
+            li 
+                a(href="#") Discussion
+            li 
+                a(href="#") News
+        
