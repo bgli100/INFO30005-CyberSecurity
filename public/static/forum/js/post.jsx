@@ -19,7 +19,12 @@ const CommentItem = ({ item }) => (
           <p class='text-sm lh-140 mb-0'>{item.content}</p>
         </div>
         <div>
-          <img src='../../../assets/img/svg/icons/Like_1_.svg' style={{ width: 25 }} />
+          <button type="button" class="btn btn-primary btn-icon" style={{ padding: '5px 15px 5px 15px', marginLeft: '5px' }}>
+            <span class="btn-inner--icon" >
+              <img src='../../../assets/img/svg/icons/Like_1_.svg' style={{ width: 20, marginBottom: 4 }} />
+            </span>
+            <span class="btn-inner--text">Like</span>
+          </button>
         </div>
       </div>
     </a>
