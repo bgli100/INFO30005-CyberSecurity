@@ -2,6 +2,20 @@ let Profile;
 let Update;
 let subPageMap = {};
 
+const setNavItemList = (callback) => {
+  const pathname = window.location.pathname;
+  const id = pathname.split("/")[2];
+  $.ajax({
+    url: "/user/checkcookie",
+    mehtod: "GET",
+  }).then((res) => {
+    if (res && !res.error && res._id == id) {
+      navItemList = ["Profile", "Update"];
+    }
+    callback();
+  });
+};
+
 //module loader
 window.loadJSX(
   [
@@ -9,13 +23,15 @@ window.loadJSX(
     "/static/user/js/components/Update.jsx",
   ],
   ([ProfileCode, UpdateCode]) => {
-    Profile = eval(ProfileCode);
-    Update = eval(UpdateCode);
-    subPageMap = {
-      Profile: (context) => Profile({ context }),
-      Update: (context) => Update({ context }),
-    };
-    ReactDOM.render(<App />, document.getElementById("root"));
+    setNavItemList(() => {
+      Profile = eval(ProfileCode);
+      Update = eval(UpdateCode);
+      subPageMap = {
+        Profile: (context) => Profile({ context }),
+        Update: (context) => Update({ context }),
+      };
+      ReactDOM.render(<App />, document.getElementById("root"));
+    });
   }
 );
 
@@ -328,21 +344,8 @@ class App extends React.Component {
       window.location.pathname = "/404";
     }
   };
-  setNavItemList = () => {
-    const pathname = window.location.pathname;
-    const id = pathname.split("/")[2];
-    $.ajax({
-      url: "/user/checkcookie",
-      mehtod: "GET",
-    }).then((res) => {
-      if (res && !res.error && res._id == id) {
-        navItemList = ["Profile", "Update"];
-      }
-    });
-  };
 
   componentDidMount() {
-    this.setNavItemList();
     this.getProfile();
     this.getComments();
     this.getPosts();
