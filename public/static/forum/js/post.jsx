@@ -51,14 +51,19 @@ class CommentItem extends React.Component {
               </a>
               <small class="float-right text-muted">{new Date(this.props.item.time).toLocaleString()}</small>
                 <br/>
-                <button class="btn btn-primary btn-sm" style={{position: 'absolute', right: this.props.isAdmin ? 110 : 10}} onClick={() => this.likeComment(this.props.item._id)}> like</button>
+                <button class="btn btn-primary btn-sm" style={{position: 'absolute', right: this.props.isAdmin ? 140 : 10}} onClick={() => this.likeComment(this.props.item._id)}>
+                  <span class="btn-inner--icon" >
+                    <img src='../../../assets/img/svg/icons/Like_1_.svg' style={{ width: 20, marginBottom: 4 }} />
+                  </span>
+                  <span class="btn-inner--text"> like</span>
+                </button>
                 { this.props.isAdmin ?
                   <button type="button" class="btn btn-primary btn-sm" style={{position: 'absolute', right: 10}} onClick={this.deleteComment(this.props.item, this.props.parent)}>
                     Delete
                   </button>
                   : ''
                 }
-                <p class="text-sm lh-140 mb-0" style={{position: 'absolute', right: this.props.isAdmin ? 210 : 110}}>rating: {this.state.rating}</p>
+                <p class="text-sm lh-140 mb-0" style={{position: 'absolute', right: this.props.isAdmin ? 270 : 140}}>rating: {this.state.rating}</p>
               
             </div>
             <p class="text-sm lh-140 mb-0">{this.props.item.content}</p>
