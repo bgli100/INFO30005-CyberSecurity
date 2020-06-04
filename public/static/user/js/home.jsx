@@ -116,7 +116,7 @@ const Form = {
   ),
 };
 
-var navItemList = ["Profile", "Update"];
+var navItemList = ["Profile"];
 
 /**
  * @description AppClass
@@ -335,10 +335,8 @@ class App extends React.Component {
       url: "/user/checkcookie",
       mehtod: "GET",
     }).then((res) => {
-      if (!res || res.error) {
-        navItemList = ["Profile"];
-      } else if (res._id != id) {
-        navItemList = ["Profile"];
+      if (res && !res.error && res._id == id) {
+        navItemList = ["Profile", "Update"];
       }
     });
   };
