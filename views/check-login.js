@@ -3,12 +3,12 @@
       mehtod: "GET",
     }).then((res) => {
       if (res && !res.error) {
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").hide();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
+        $("#navbar-main-collapse>ul.d-none>li.logoutonly").hide();
+        $("#navbar-main-collapse>ul.d-none>li.loginonly").show();
+        $("#navbar-main-collapse>ul.mx-auto>li.loginonly").show();
       } else {
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").hide();
+        $("#navbar-main-collapse>ul.d-none>li.logoutonly").show();
+        $("#navbar-main-collapse>ul.d-none>li.loginonly").hide();
+        $("#navbar-main-collapse>ul.mx-auto>li.loginonly").hide();
       }
     });

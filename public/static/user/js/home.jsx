@@ -116,8 +116,6 @@ const Form = {
   ),
 };
 
-var navItemList = ["Profile"];
-
 /**
  * @description AppClass
  */
@@ -337,8 +335,9 @@ class App extends React.Component {
       mehtod: "GET",
     }).then((res) => {
       if (res && !res.error && res._id == id) {
-        navItemList = ["Profile", "Update"];
-        this.setState({navItemList: navItemList});
+        this.setState({navItemList: ["Profile", "Update"]});
+      } else {
+        this.setState({navItemList: ["Profile"]});
       }
     });
   };
@@ -368,7 +367,7 @@ class App extends React.Component {
                 </div>
                 <div class="mt-4">
                   <ul class="nav nav-tabs overflow-x">
-                    {navItemList.map((item, index) => (
+                    {this.state.navItemList.map((item, index) => (
                       <NavItem
                         name={item}
                         curIndex={this.state.activeIndex}

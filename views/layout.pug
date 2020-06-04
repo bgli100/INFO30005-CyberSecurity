@@ -40,21 +40,23 @@ html
                             line(x1='6' y1='6' x2='18' y2='18')
                 // Main navigation
                 ul.navbar-nav.align-items-center.mx-auto
-                    li.nav-item(style='display:none;')
+                    li.nav-item(style='display:none;').loginonly
                         script. 
                             $.ajax({url : "/user/checkcookie",method : "GET"}).then(
                                 function (res) {
                                     if (res && !res.error){
                                         document.getElementById("Profile").href = '/user/'+res._id+'/profile';
-                                    }});
+                                    }
+                                }
+                            );
                         a.nav-link(href='/', id = "Profile") Profile
                 // Right navigation
                 ul.navbar-nav.align-items-lg-center.d-none.d-lg-flex.ml-lg-auto
                     // Auth
-                    li.nav-item(style='display: none;')
+                    li.nav-item(style='display: none;').logoutonly
                         a.btn.btn-sm.btn-primary.btn-icon.ml-3(href='/user#login')
                             span.btn-inner--text Sign In
-                    li.nav-item(style='display: none;')
+                    li.nav-item(style='display: none;').loginonly
                         a.nav-link(href='/user#login', onclick='javascript:$.ajax({url : "/user/logout",method : "GET"})')
                             | Sign Out
 
