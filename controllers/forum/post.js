@@ -73,6 +73,13 @@ const deletePost = (req, res) => {
             return;
         }
         doc.remove();
+        Comment.find({
+            post: ObjectId(id)
+        }, (err2, doc2) => {
+            if(err2 || !doc2)
+                return;
+            doc2.remove();
+        });
         res.json({
             success: true
         });
