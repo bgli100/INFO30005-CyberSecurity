@@ -2,20 +2,6 @@ let Profile;
 let Update;
 let subPageMap = {};
 
-const setNavItemList = (callback) => {
-  const pathname = window.location.pathname;
-  const id = pathname.split("/")[2];
-  $.ajax({
-    url: "/user/checkcookie",
-    mehtod: "GET",
-  }).then((res) => {
-    if (res && !res.error && res._id == id) {
-      navItemList = ["Profile", "Update"];
-    }
-    callback();
-  });
-};
-
 //module loader
 window.loadJSX(
   [
@@ -23,15 +9,13 @@ window.loadJSX(
     "/static/user/js/components/Update.jsx",
   ],
   ([ProfileCode, UpdateCode]) => {
-    setNavItemList(() => {
-      Profile = eval(ProfileCode);
-      Update = eval(UpdateCode);
-      subPageMap = {
-        Profile: (context) => Profile({ context }),
-        Update: (context) => Update({ context }),
-      };
-      ReactDOM.render(<App />, document.getElementById("root"));
-    });
+    Profile = eval(ProfileCode);
+    Update = eval(UpdateCode);
+    subPageMap = {
+      Profile: (context) => Profile({ context }),
+      Update: (context) => Update({ context }),
+    };
+    ReactDOM.render(<App />, document.getElementById("root"));
   }
 );
 
@@ -157,6 +141,7 @@ class App extends React.Component {
     commentList: [],
     postList: [],
     redirect: false,
+    navItemList: ['Profile']
   };
   toast = ({ type = "success", message = "", duration = 2000 }) => {
     let caseMap = {
@@ -344,8 +329,22 @@ class App extends React.Component {
       window.location.pathname = "/404";
     }
   };
+  setNavItemList = () => {
+    const pathname = window.location.pathname;
+    const id = pathname.split("/")[2];
+    $.ajax({
+      url: "/user/checkcookie",
+      mehtod: "GET",
+    }).then((res) => {
+      if (res && !res.error && res._id == id) {
+        navItemList = ["Profile", "Update"];
+        this.setState({navItemList: navItemList});
+      }
+    });
+  };
 
   componentDidMount() {
+    this.setNavItemList();
     this.getProfile();
     this.getComments();
     this.getPosts();
@@ -381,7 +380,7 @@ class App extends React.Component {
                     ))}
                   </ul>
                   <div style={{ padding: "20px 0" }}>
-                    {subPageMap[navItemList[this.state.activeIndex]](this)}
+                    {subPageMap[this.state.navItemList[this.state.activeIndex]](this)}
                   </div>
                 </div>
               </div>
