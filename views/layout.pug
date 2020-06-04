@@ -40,6 +40,12 @@ html
                             line(x1='6' y1='6' x2='18' y2='18')
                 // Main navigation
                 ul.navbar-nav.align-items-center.mx-auto
+                    li.nav-item
+                        a.nav-link(href='/forum#troubleShooting') Trouble Shooting
+                    li.nav-item
+                        a.nav-link(href='/forum#discussion') Discussion
+                    li.nav-item
+                        a.nav-link(href='/forum#news') Trending News
                     li.nav-item(style='display:none;').loginonly
                         script. 
                             $.ajax({url : "/user/checkcookie",method : "GET"}).then(
@@ -50,12 +56,6 @@ html
                                 }
                             );
                         a.nav-link(href='/', id = "Profile") Profile
-                    li.nav-item
-                        a.nav-link(href='/forum#troubleShooting') Trouble Shooting
-                    li.nav-item
-                        a.nav-link(href='/forum#discussion') Discussion
-                    li.nav-item
-                        a.nav-link(href='/forum#news') Trending News
                 // Right navigation
                 ul.navbar-nav.align-items-lg-center.d-none.d-lg-flex.ml-lg-auto
                     // Auth

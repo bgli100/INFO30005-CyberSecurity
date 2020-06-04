@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Post = mongoose.model('posts');
+const Comment = mongoose.model('comments');
 const ObjectId = mongoose.mongo.ObjectId;
 const commentController = require('./comment');
 const param = require('../../models/param');
@@ -73,13 +74,9 @@ const deletePost = (req, res) => {
             return;
         }
         doc.remove();
-        Comment.find({
+        Comment.remove({
             post: ObjectId(id)
-        }, (err2, doc2) => {
-            if(err2 || !doc2)
-                return;
-            doc2.remove();
-        });
+        }).remove().exec();
         res.json({
             success: true
         });
