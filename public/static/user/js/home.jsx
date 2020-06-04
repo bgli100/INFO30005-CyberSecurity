@@ -374,12 +374,17 @@ class App extends React.Component {
                         index={index}
                         onClick={() => {
                           this.setState({ activeIndex: index });
+                          $(".navItem").hide();
+                          $(".navItem" + index).show();
                         }}
                       />
                     ))}
                   </ul>
-                  <div style={{ padding: "20px 0" }}>
-                    {subPageMap[this.state.navItemList[this.state.activeIndex]](this)}
+                  <div class="navItem navItem0" style={{ padding: "20px 0" }}>
+                    {subPageMap['Profile'](this)}
+                  </div>
+                  <div class="navItem navItem1" style={{ padding: "20px 0", display: "none" }}>
+                    {subPageMap['Update'](this)}
                   </div>
                 </div>
               </div>
