@@ -40,8 +40,6 @@ html
                             line(x1='6' y1='6' x2='18' y2='18')
                 // Main navigation
                 ul.navbar-nav.align-items-center.mx-auto
-                    li.nav-item
-                      a.nav-link(href='/forum#all') Forum
                     li.nav-item(style='display:none;')
                         script. 
                             $.ajax({url : "/user/checkcookie",method : "GET"}).then(

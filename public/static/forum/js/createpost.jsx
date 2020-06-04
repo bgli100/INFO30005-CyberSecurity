@@ -35,14 +35,7 @@ class App extends React.Component {
         this.setState({
           cookie_id: res._id,
         });
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").hide();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").show();
       } else {
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(1)").show();
-        $("#navbar-main-collapse>ul.d-none>li:nth-child(2)").hide();
-        $("#navbar-main-collapse>ul.mx-auto>li:nth-child(2)").hide();
         this.toast({
             type: 'error',
             message: 'You have not logged in!'
@@ -56,19 +49,28 @@ class App extends React.Component {
     };
 
     handleSubmit = () => {
-        console.log('this.state', this.state)
         let title = this.state.title;
         let content = this.state.content;
+        let tag = window.location.hash.split('/')[0];
+        tag = tag.substring(1,tag.length);
+
+        if (!title || !content){
+            this.toast({
+                type: 'error',
+                message: 'Please enter text for both title and content'
+            });
+            return;
+        }
         $.ajax({
             url: "/forum/post",
             method: "PUT",
             data: {
                 title,
-                content
+                content,
+                tag
             },
         }).then((res) => {
             if (!res || res.error) {
-                console.log(res);
                 this.toast({
                     type: 'error',
                     message: 'Post Error! Please re-log in and try again'
@@ -83,7 +85,7 @@ class App extends React.Component {
                     message: 'You have successfully submit a new post'
                 });
                 setTimeout(()=>{
-                    window.location.hash = "#all";
+                    window.location.hash = "#"+tag;
                 },1000);
             }
         });

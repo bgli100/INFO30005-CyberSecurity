@@ -1,9 +1,12 @@
 //dont need react router is so non-light-weight
 //ES5 only whitout BABEL
 var routes = {
-    ['all']: '/static/forum/js/forum.jsx',
-    ['one']: '/static/forum/js/post.jsx',
-    ['create']: '/static/forum/js/createpost.jsx'
+    ['discussion']: '/static/forum/js/forum.jsx',
+    ['news']: '/static/forum/js/forum.jsx',
+    ['troubleShooting']: '/static/forum/js/forum.jsx',
+    ['discussion/create']: '/static/forum/js/createpost.jsx',
+    ['news/create']: '/static/forum/js/createpost.jsx',
+    ['troubleShooting/create']: '/static/forum/js/createpost.jsx'
 };
 ; (function () {
         $(document).ready(ready)

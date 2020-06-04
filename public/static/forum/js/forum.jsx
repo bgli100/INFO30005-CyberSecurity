@@ -76,10 +76,19 @@ class App extends React.Component {
  * @description getForum
  */
   getForum = () => {
+    let currentForum = window.location.hash;
+    currentForum = currentForum.substring(1,currentForum.length);
     $.ajax({
       url: "/forum/all",
       method: "GET",
     }).then((res) => {
+        let tmp = [];
+        for (let i = 0; i < res.length; i++){
+          if (res[i].tag == currentForum){
+            tmp.push(res[i]);
+          }
+       }
+       res = tmp;
        for (let i = 0; i < res.length; i++){
         $.ajax({
           url: "/user/" + res[i].user,
@@ -115,13 +124,39 @@ class App extends React.Component {
       }
     });
   };
+
+  forumName = () =>{
+    let name = window.location.hash;
+    if (name == "#discussion"){
+      return (<h3>Cyber Security Knowledge Discussion</h3>);
+    }
+    if (name == "#troubleShooting"){
+      return (<h3>Cyber Security Trouble Shooting</h3>);
+    }
+    if (name == "#news"){
+      return (<h3>Cyber Security Trending News</h3>);
+    }
+  }
+
+  newPostHref = () => {
+    let name = window.location.hash;
+    if (name == "#discussion"){
+      return "/forum#discussion/create";
+    }
+    if (name == "#troubleShooting"){
+      return "/forum#troubleShooting/create";
+    }
+    if (name == "#news"){
+      return "/forum#news/create";
+    }
+  }
   render() {
     return (
       <div>
         <section class="pt-5 bg-section-secondary" style={{ minHeight: 900 }}>
           <div class="container">
             <div class="card-header">
-              <h3>Forum for Cyber Security Knowledge Discussion</h3>
+              {this.forumName()}
             </div>
             <div class="list-group">
               {this.state.posts.map((item, index) => (
@@ -131,11 +166,10 @@ class App extends React.Component {
               ))}
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
-              <a href='/forum#create' >
+              <a href={this.newPostHref()} >
                 <button type="button" class="btn btn-primary btn-sm" id="newpost">
                   New Post
                 </button>
-                {}
               </a>
             </div>
           </div>
