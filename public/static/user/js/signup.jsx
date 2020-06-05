@@ -34,13 +34,10 @@ class App extends React.Component {
   }
   renderRedirect = () => {
     if (this.state.redirect) {
-      $.ajax({
-        url: "/user/checkcookie",
-        mehtod: "GET"
-      }).then((res) => {
-        history.pushState("", document.title, window.location.pathname);
-        window.location.pathname = "/user/" + res._id + "/profile";
-      });
+      if (this.state.redirect) {
+        setTimeout(()=>{
+          window.location.href = "/";
+        },400);
     }
   }
 

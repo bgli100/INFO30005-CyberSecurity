@@ -222,7 +222,7 @@ class App extends React.Component {
       }
     });
   };
-
+  
   render() {
     return (
       <div>
@@ -231,7 +231,7 @@ class App extends React.Component {
             <div class="card-header">
               <h3>{this.state.post.title}</h3>
               <a href={"/user/"+this.state.post.user+"/profile"}>{"By " + this.state.post.userName}</a>
-              <p>{this.state.post.content}</p>
+              <p>{this.state.post.content.replace(/\n/g,'<br>')}</p>
             </div>
             
             <div class="card-header">
