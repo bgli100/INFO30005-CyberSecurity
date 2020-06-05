@@ -231,7 +231,9 @@ class App extends React.Component {
             <div class="card-header">
               <h3>{this.state.post.title}</h3>
               <a href={"/user/"+this.state.post.user+"/profile"}>{"By " + this.state.post.userName}</a>
-              <p>{this.state.post.content.replace(/\n/g,'<br>')}</p>
+              <div>
+                {this.state.post.content.split('\n').map((item,index)=>(<p class="font-weight-normal" >{item}</p>))}
+              </div>
             </div>
             
             <div class="card-header">

@@ -34,10 +34,9 @@ class App extends React.Component {
   }
   renderRedirect = () => {
     if (this.state.redirect) {
-      if (this.state.redirect) {
-        setTimeout(()=>{
-          window.location.href = "/";
-        },400);
+      setTimeout(()=>{
+        window.location.href = "/";
+      },400);
     }
   }
 
