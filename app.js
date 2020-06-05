@@ -48,3 +48,5 @@ app.use(function(err, req, res, next) {
 });
 
 app.listen(process.env.PORT || 80);
+
+module.exports = app;
