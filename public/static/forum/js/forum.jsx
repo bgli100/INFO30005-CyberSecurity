@@ -50,12 +50,7 @@ class PostItem extends React.Component {
 
 class App extends React.Component {
   state = {
-    posts: [
-      {
-        title: "title",
-        _id: 1,
-      },
-    ],
+    posts: [],
     hideCreate : false,
   };
 
