@@ -3,69 +3,47 @@ html
     head
         title= title
         link(rel='stylesheet' href='/stylesheets/style.css')
-        // Favicon
         link(rel='icon' href='/assets/img/brand/favicon.png' type='image/png')
-        // Font Awesome
         link(rel='stylesheet' href='/assets/libs/@fortawesome/fontawesome-free/css/all.min.css')
-        // Quick CSS
         link#stylesheet(rel='stylesheet' href='/assets/css/quick-website.css')
         script(src='/assets/js/jquery.min.js')
         script(src='/assets/js/react.min.js')
         script(src='/assets/js/react-dom.min.js')
         script(src='/assets/js/babel.min.js')
+        script(src='/assets/js/bootstrap.min.js')
         script(src='/assets/js/require.min.js')
-
+        script. 
+            $.ajax({url : "/user/checkcookie",method : "GET"}).then(
+                function (res) {
+                    if (res && !res.error){
+                        document.getElementById("Profile").href = '/user/' + res._id + '/profile';
+                    }
+                }
+            );
         style.
             #header-main{
                 display:block;
             }
     body
-    header#header-main
-    // Navbar
-    nav#navbar-main.navbar.navbar-main.navbar-expand-lg.navbar-light
-        .container
-            // Brand
-            a.navbar-brand(href='/')
-                img#navbar-logo(alt='Image placeholder' src='/assets/img/Cyberium.png')
-            // Toggler
-            button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbar-main-collapse' aria-controls='navbar-main-collapse' aria-expanded='false' aria-label='Toggle navigation')
-                span.navbar-toggler-icon
-            // Collapse
-            #navbar-main-collapse.collapse.navbar-collapse.navbar-collapse-overlay
-                // Toggler
-                .position-relative
-                    button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbar-main-collapse' aria-controls='navbar-main-collapse' aria-expanded='false' aria-label='Toggle navigation')
-                        svg.feather.feather-x(xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewbox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round')
-                            line(x1='18' y1='6' x2='6' y2='18')
-                            line(x1='6' y1='6' x2='18' y2='18')
-                // Main navigation
-                ul.navbar-nav.align-items-center.mx-auto
-                    li.nav-item
-                        a.nav-link(href='/forum#troubleShooting') Trouble Shooting
-                    li.nav-item
-                        a.nav-link(href='/forum#discussion') Discussion
-                    li.nav-item
-                        a.nav-link(href='/forum#news') Trending News
-                    li.nav-item(style='display:none;').loginonly
-                        script. 
-                            $.ajax({url : "/user/checkcookie",method : "GET"}).then(
-                                function (res) {
-                                    if (res && !res.error){
-                                        document.getElementById("Profile").href = '/user/'+res._id+'/profile';
-                                    }
-                                }
-                            );
-                        a.nav-link(href='/', id = "Profile") Profile
-                // Right navigation
-                ul.navbar-nav.align-items-lg-center.d-none.d-lg-flex.ml-lg-auto
-                    // Auth
-                    li.nav-item(style='display: none;').logoutonly
-                        a.btn.btn-sm.btn-primary.btn-icon.ml-3(href='/user#login')
-                            span.btn-inner--text Sign In
-                    li.nav-item(style='display: none;').loginonly
-                        a.nav-link(href='/user#login', onclick='javascript:$.ajax({url : "/user/logout",method : "GET"})')
-                            | Sign Out
 
+    // Navbar
+    nav.navbar.navbar-expand-lg.navbar-light
+        a.navbar-brand(href='/')
+            img#navbar-logo(src='/assets/img/Cyberium.png')
+            // Toggler
+        button.navbar-toggler.collapsed(type='button' data-toggle='collapse' data-target='#navbar-main-collapse' aria-controls='navbar-main-collapse' aria-expanded='false' aria-label='Toggle navigation')
+            span.navbar-toggler-icon
+            // Collapse
+        div#navbar-main-collapse.collapse.navbar-collapse
+            ul.navbar-nav
+                a.nav-item.nav-link(href='/forum#troubleShooting') Trouble Shooting
+                a.nav-item.nav-link(href='/forum#discussion') Discussion
+                a.nav-item.nav-link(href='/forum#news') Trending News
+            ul.navbar-nav.align-items-lg-center.d-lg-flex.ml-lg-auto
+                a#Profile.nav-item.loginonly.nav-link(href='/', style='display:none;') Profile
+                a.nav-item.logoutonly.btn.btn-sm.btn-primary.btn-icon.ml-3(style='display: none;', href='/user#login') Sign In
+                a.nav-item.loginonly.btn.btn-sm.btn-primary.btn-icon.ml-3(style='display: none;', href='/user#login', onclick='javascript:$.ajax({url : "/user/logout",method : "GET"})') Sign Out
     script
         include check-login.js
+
 block content
