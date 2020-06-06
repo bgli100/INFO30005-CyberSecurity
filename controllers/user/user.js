@@ -4,8 +4,8 @@ const ObjectId = mongoose.mongo.ObjectId;
 const Comment = mongoose.model('comments');
 const Post = mongoose.model('posts');
 const Rating = mongoose.model('ratings');
-const crypto = require('crypto');
-const SALT = "DADA";
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const param = require('../../models/param');
 
 /**
@@ -32,8 +32,7 @@ const profilePage = (req, res) =>{
  * @param {*} res 
  */
 const verifyLogin = (req, res) => {
-    let password = crypto.createHash("md5").update(req.body.password + SALT).digest('hex');
-    User.findOne({userName: req.body.account, password: password}, (err, doc) =>{
+    User.findOne({userName: req.body.account}, (err, doc) =>{
         if (err || !doc) {
             console.error("Error, unmatched user name or password");
             res.json({
@@ -41,11 +40,21 @@ const verifyLogin = (req, res) => {
             });
             return;
         }
-        doc = doc.toObject();
-        res.cookie('_userID', doc._id, {
-            expires: new Date(Date.now() + 3600000),
-            encode: String
-        }).json(doc);
+        bcrypt.compare(req.body.password, doc.password, function(err, result) {
+            if (!err && result){
+                doc = doc.toObject();
+                res.cookie('_userID', doc._id, {
+                    expires: new Date(Date.now() + 3600000),
+                    encode: String
+                }).json(doc);
+            }
+            else {
+                console.error("Error, unmatched user name or password");
+                res.json({
+                    error: 'unmatched user name or password'
+                });
+            }
+        });
     });
 };
 
@@ -66,14 +75,15 @@ const logout = (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-const signup = (req, res) => {
-    const newUser = {
-        userName: req.body.userName,
-        password: crypto.createHash("md5").update(req.body.password + SALT).digest('hex'),
-        email: req.body.email,
-    };
-    const data = new User(newUser);
-    data.save((err, doc) => {
+const signup = async (req, res) => {
+    bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+        var newUser = {
+            userName: req.body.userName,
+            password: hash,
+            email: req.body.email,
+        };
+        const data = new User(newUser);
+        data.save((err, doc) => {
         if (err || !doc){
             console.error("Error, used user name");
             res.json({
@@ -86,6 +96,7 @@ const signup = (req, res) => {
             expires: new Date(Date.now() + 3600000),
             encode: String
           }).json(doc);
+        });
     });
 };
 

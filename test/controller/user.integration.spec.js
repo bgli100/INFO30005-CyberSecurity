@@ -70,14 +70,14 @@ describe('Integration test for user management', ()=>{
         });
 
         it('should give user information if user has logged in', (done)=>{
-            const cValue = "_userID=5ed2972a83beb506e8103b11";
+            const cValue = "_userID=5edb3644a92e9c157026b2e1";
             supertest(app)
                 .get('/user/checkcookie')
                 .set('Cookie', cValue)
                 .end((err, res) =>{
                     expect(res.statusCode).to.equal(200);
                     expect(res.error).to.be.false;
-                    user.findById("5ed2972a83beb506e8103b11", (err, doc) => {
+                    user.findById("5edb3644a92e9c157026b2e1", (err, doc) => {
                         expect(res.body.description).to.equal(doc.description);
                         expect(res.body.email).to.equal(doc.email);
                         expect(res.body.userName).to.equal(doc.userName);
@@ -90,11 +90,11 @@ describe('Integration test for user management', ()=>{
     describe('#GET to /user:id to get user information', ()=>{
         it('should give user information for given user id', (done)=>{
             supertest(app)
-                .get('/user/5ed2972a83beb506e8103b11')
+                .get('/user/5edb3644a92e9c157026b2e1')
                 .end((err, res)=>{
                     expect(res.statusCode).to.equal(200);
                     expect(res.error).to.be.false;
-                    user.findById("5ed2972a83beb506e8103b11", (err, doc) => {
+                    user.findById("5edb3644a92e9c157026b2e1", (err, doc) => {
                         expect(res.body.userName).to.equal(doc.userName);
                         expect(res.body.description).to.equal(doc.description);
                     });
@@ -108,15 +108,15 @@ describe('Integration test for user management', ()=>{
         it('should update user description and email', (done)=>{
             let new_des = "sample description";
             let new_email = "user@user.io";
-            const cValue = "_userID=5ed2972a83beb506e8103b11";
+            const cValue = "_userID=5edb3644a92e9c157026b2e1";
             supertest(app)
-                .put('/user/5ed2972a83beb506e8103b11')
+                .put('/user/5edb3644a92e9c157026b2e1')
                 .set('Cookie', cValue)
                 .send({description:new_des, email:new_email})
                 .end((err, res) =>{
                     expect(res.statusCode).to.equal(200);
                     expect(res.error).to.be.false;
-                    user.findById("5ed2972a83beb506e8103b11", (err, doc) => {
+                    user.findById("5edb3644a92e9c157026b2e1", (err, doc) => {
                         expect(new_des).to.equal(doc.description);
                         expect(new_email).to.equal(doc.email);
                     });
@@ -127,12 +127,12 @@ describe('Integration test for user management', ()=>{
     describe("#GET to /user:id/posts to get all the posts by users", ()=>{
         it('should get all the posts of user', (done)=>{
             supertest(app)
-            .get('/user/5ed2972a83beb506e8103b11/posts')
+            .get('/user/5edb3644a92e9c157026b2e1/posts')
             .end((err, res)=>{
                 expect(res.statusCode).to.equal(200);
                 expect(res.error).to.be.false;
                 for (var post of res.body){
-                    expect(post.user).to.be.equal("5ed2972a83beb506e8103b11");
+                    expect(post.user).to.be.equal("5edb3644a92e9c157026b2e1");
                 }
                 done();
             });
@@ -143,12 +143,12 @@ describe('Integration test for user management', ()=>{
     describe("#GET to /user:id/comments to get all the comments by users", ()=>{
         it('should get all the comments of user', (done)=>{
             supertest(app)
-            .get('/user/5ed2972a83beb506e8103b11/comments')
+            .get('/user/5edb3644a92e9c157026b2e1/comments')
             .end((err, res)=>{
                 expect(res.statusCode).to.equal(200);
                 expect(res.error).to.be.false;
                 for (var comment of res.body){
-                    expect(comment.user).to.be.equal("5ed2972a83beb506e8103b11");
+                    expect(comment.user).to.be.equal("5edb3644a92e9c157026b2e1");
                 }
                 done();
             });
