@@ -4,6 +4,8 @@ class App extends React.Component {
     password: "",
     redirect: false
   };
+
+  // alert message
   toast = ({ type = "success", message = "", duration = 1000 }) => {
     let caseMap = {
       error: ({ type, message }) => (
@@ -25,7 +27,7 @@ class App extends React.Component {
     }, duration);
   };
 
-
+  // redirect to home page
   setRedirect = () => {
     this.setState({
       redirect: true

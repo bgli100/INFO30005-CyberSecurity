@@ -6,6 +6,7 @@ class App extends React.Component {
         emergency:'Active'
     };
 
+    //allert message
     toast = ({ type = "success", message = "", duration = 2000 }) => {
         let caseMap = {
             error: ({ type, message }) => (
@@ -57,6 +58,8 @@ class App extends React.Component {
         let emergency = this.state.emergency;
         let tag = window.location.hash.split('/')[0];
         tag = tag.substring(1, tag.length);
+
+        //ensure all three have been filled
         if (!title || !content || !area) {
             this.toast({
                 type: 'error',
@@ -98,6 +101,8 @@ class App extends React.Component {
     componentDidMount() {
         this.signInStatus();
     }
+
+    // render the component
     render() {
         return (
             <div>

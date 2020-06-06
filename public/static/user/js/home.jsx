@@ -20,7 +20,7 @@ window.loadJSX(
 );
 
 /**
- * @description Components
+ * @description Components of Profile and Update
  */
 const NavItem = ({ name, index, curIndex, onClick }) => (
   <li class="nav-item">
@@ -162,7 +162,7 @@ class App extends React.Component {
     }, duration);
   };
   /**
-   * @description getComments
+   * @description getComments to get the comments of user
    */
   getComments = () => {
     const pathname = window.location.pathname;
@@ -203,7 +203,7 @@ class App extends React.Component {
     });
   };
   /**
-   * @description getPosts
+   * @description getPosts to get the posts of user
    */
   getPosts = () => {
     const pathname = window.location.pathname;
@@ -237,7 +237,7 @@ class App extends React.Component {
   };
 
   /**
-   * @description getProfile
+   * @description get the user information needed to render the page
    */
   getProfile = () => {
     const pathname = window.location.pathname;

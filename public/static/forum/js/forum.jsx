@@ -1,5 +1,5 @@
 class PostItem extends React.Component {
-
+  // delete the post using admin account
   deletePost(id, parent) {
     return () => {
       $.ajax({
@@ -11,6 +11,7 @@ class PostItem extends React.Component {
     };
   }
 
+  // responsive design
   visualAdjust() {
     if (window.innerWidth <= 900){
       return (<p></p>);
@@ -19,6 +20,7 @@ class PostItem extends React.Component {
       return (<p></p>);
     }
   }
+
   render() {
     return (
       <div class="list-group-item list-group-item-action active" style={{ display: 'flex' }}>
@@ -62,6 +64,7 @@ class App extends React.Component {
     this.signInStatus();
   }
 
+  //alert message
   toast = ({ type = "success", message = "", duration = 2000 }) => {
     let caseMap = {
       error: ({ type, message }) => (
@@ -84,7 +87,7 @@ class App extends React.Component {
   };
 
   /**
- * @description getForum
+ * @description getForum to get all posts of current forum
  */
   getForum = () => {
     let currentForum = window.location.hash;
@@ -101,6 +104,7 @@ class App extends React.Component {
        }
        res = tmp;
        for (let i = 0; i < res.length; i++){
+         // handle long title
          if (res[i].title.length > 60){
            res[i].title = res[i].title.substring(0,61)+"...";
          }
@@ -111,6 +115,7 @@ class App extends React.Component {
           res[i].userName = res2.userName;
           this.setState({ posts: res });
         });
+        // get all the comments
         $.ajax({
           url: "/forum/post/" + res[i]._id,
           method: "GET"
@@ -139,6 +144,7 @@ class App extends React.Component {
     });
   };
 
+  // render appropriate forum title
   forumName = () =>{
     let name = window.location.hash;
     if (name == "#discussion"){
@@ -152,6 +158,7 @@ class App extends React.Component {
     }
   }
 
+  // go to appropriate new post url
   newPostHref = () => {
     let name = window.location.hash;
     if (name == "#discussion"){

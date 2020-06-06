@@ -5,17 +5,26 @@ const ratingController = require('../controllers/forum/rating');
 const commentController = require('../controllers/forum/comment');
 const indexController = require('../controllers/forum/index');
 
-//renderPages 
+//render index page of forum
 router.get('/', indexController.indexPage);
+//render post page
 router.get('/post/:id/content', indexController.postPage);
 
-
+// create comment
 router.put('/post/:id/comment', commentController.createComment);
-
+// get all posts
 router.get('/all', postController.findAllPost);
+
+// create post
 router.put('/post', postController.createPost);
+
+// delete post
 router.delete('/post/:id', postController.deletePost);
+
+// get post
 router.get('/post/:id', postController.getPost);
+
+//update the post
 router.put('/post/:id', postController.updatePost);
 
 router.get('/post/:id/rating', ratingController.getRating('post'));

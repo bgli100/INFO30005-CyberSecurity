@@ -5,6 +5,8 @@ class App extends React.Component {
     email: "",
     redirect : false
   };
+
+  // alert message
   toast = ({ type = "success", message = "", duration = 1000 }) => {
     let caseMap = {
       error: ({ type, message }) => (
@@ -26,7 +28,7 @@ class App extends React.Component {
     }, duration);
   };
 
-  
+  // redirect to home page
   setRedirect = () => {
     this.setState({
       redirect: true
@@ -41,7 +43,7 @@ class App extends React.Component {
   }
 
   /**
-   * @description signIn
+   * @description sign up user
    */
   signUp = () => {
     let { userName, password, email } = this.state;
@@ -119,7 +121,6 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        {/* toast */}
 
         <div className="container d-flex flex-column">
           <div className="row align-items-center justify-content-center min-vh-100">

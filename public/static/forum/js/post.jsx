@@ -2,7 +2,7 @@ class CommentItem extends React.Component {
   state = {
     rating: 0
   };
-
+  // delete comment in admin account
   deleteComment(item, parent) {
     return () => {
       $.ajax({
@@ -22,7 +22,7 @@ class CommentItem extends React.Component {
   componentDidMount = () => {
     this.getRating();
   };
-
+  //get the rating of the current comment
   getRating = () => {
     $.ajax({
       url: "/forum/post/" + this.props.item.post + "/comment/" + this.props.item._id + "/rating",
@@ -180,7 +180,8 @@ class App extends React.Component {
           message: 'Invalid post ID path'
         });
         setTimeout(() => {
-          this.window.href = '/404';
+          console.log(window.location.pathname);
+          window.location.pathname = '/404';
         }, 800);
         return;
       }

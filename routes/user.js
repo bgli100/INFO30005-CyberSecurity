@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user/user');
 
-//renderPages 
+//render user login page
 router.get('/', userController.indexPage);
+
+//render user profile page
 router.get('/:id/profile', userController.profilePage);
 
 //RestfulAPI
