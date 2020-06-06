@@ -1,5 +1,5 @@
 class PostItem extends React.Component {
-  
+
   deletePost(id, parent) {
     return () => {
       $.ajax({
@@ -11,12 +11,23 @@ class PostItem extends React.Component {
     };
   }
 
+  visualAdjust() {
+    if (window.innerWidth <= 900){
+      return (<p></p>);
+    }
+    else if (!window.innerWidth){
+      return (<p></p>);
+    }
+  }
   render() {
     return (
       <div class="list-group-item list-group-item-action active" style={{ display: 'flex' }}>
         <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '3%', minWidth: '4%', borderRadius: 5, border: '2px solid #ccc' }}>{this.props.item.commentCount}</span>
         <div style={{ marginLeft: 10 }}>
-          <a href={"/forum/post/"+this.props.item._id+"/content"} ><h6>{this.props.item.title}</h6></a>
+          {this.visualAdjust()}
+          <a href={"/forum/post/"+this.props.item._id+"/content"} >
+            <h6>{this.props.item.title}</h6>
+          </a>
         </div>
         <div class="h6 float-right" style={{position: 'absolute', right: this.props.isAdmin ? 310 : 210}}>
           {this.props.item.userName}
@@ -156,6 +167,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
         <section class="pt-5 bg-section-secondary" style={{ minHeight: 900 }}>
           <div class="container">
             <div class="card-header">
