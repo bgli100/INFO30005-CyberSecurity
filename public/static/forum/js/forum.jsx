@@ -90,6 +90,9 @@ class App extends React.Component {
        }
        res = tmp;
        for (let i = 0; i < res.length; i++){
+         if (res[i].title.length > 60){
+           res[i].title = res[i].title.substring(0,61)+"...";
+         }
         $.ajax({
           url: "/user/" + res[i].user,
           method: "GET"
