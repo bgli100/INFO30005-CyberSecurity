@@ -180,7 +180,6 @@ class App extends React.Component {
           message: 'Invalid post ID path'
         });
         setTimeout(() => {
-          console.log(window.location.pathname);
           window.location.pathname = '/404';
         }, 800);
         return;
