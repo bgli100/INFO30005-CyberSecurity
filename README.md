@@ -17,9 +17,11 @@ Functionalities
    2. user signup: /user#signup
    3. sample user profile: /user/5edb3644a92e9c157026b2e1/profile
    (user profile can also be visited by clicking on user name in the post)
-   (Note that there might be improper display of user profile and update. This is due to the delay of the remote server and Chrome code
-   optimisation. Please clear the browser cache and refresh the page. Otherwise, you can test it locally.)
-   4. user update is in the profile page, it can be updated when user has logged in and go to user's own profile page.
+   (Note that there might be improper display of user profile and update. This is due to the delay of
+   the remote server and Chrome code optimisation. Please clear the browser cache and refresh the
+   page. Otherwise, you can test it locally.)
+   4. user update is in the profile page, it can be updated when user has logged in and go to user's
+   own profile page.
 2. Forum 
 
     Router: forum.js (shared by all)
@@ -35,8 +37,8 @@ Functionalities
     model: forum/post.js, comment.js controller: forum/comment.js, post.js
     it will render comments if other users have commented on the post.
     
-    Below methods needs user log in (if you do not sign in and visit the url, there will either be error handling and redirection
-    or the content will not be shown)
+    Below methods needs user log in (if you do not sign in and visit the url, there will either
+    be error handling and redirection or the content will not be shown)
     3. Create a new post: /forum#troubleShooting/create or click on New Post button in the forum
     model: forum/post.js controller: forum/post.js
     
@@ -56,11 +58,14 @@ Functionalities
     model: forum/rating.js (shared by all)
     views: in the React code
     
-    Rating system will show the rating of a comment, the rating of user and give "like" to add one rating for both the comment and
-    user.
-    1. view the rating of a comment: go to post page where there are some comments. Rating is shown next to the comment.
-    2. view the rating of a user: go to user profile page according to the step 3 in user management.
-    3. (You must log in) give like to a comment: click on like to a comment. You cannot give multiple like to a comment.
+    Rating system will show the rating of a comment, the rating of user and give "like" to add
+    one rating for both the comment and user.
+    1. view the rating of a comment: go to post page where there are some comments. Rating is
+    shown next to the comment.
+    2. view the rating of a user: go to user profile page according to the step 3 in
+    user management.
+    3. (You must log in) give like to a comment: click on like to a comment. You cannot
+    give multiple like to a comment.
 
 4. Front page
     Router: index.js
@@ -72,7 +77,7 @@ Functionalities
 </pre>
 Testing
 <pre>
-npm test will run the testing. Please do not change the user's description with the user name "user" in order to pass all the tests.
-Uncomment the signup test to run it. Signup test can only run once.
+npm test will run the testing. Please do not change the user's description with the user name "user"
+in order to pass all the tests. Uncomment the signup test to run it. Signup test can only run once.
 </pre>
 Reponsive design: Using moblie phone or other small size device will let naviagtion bar turn into a checklist to select each link. In the forum page, the title of posts will be reponsive so that it will not overlap with other texts.
