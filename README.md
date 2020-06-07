@@ -69,7 +69,10 @@ Functionalities
     
     Front page defines the purpose of our website and also navigate to the subforums.
     go to / to the front page.
-
-Testing
-npm test will run the testing. Please do not change the user's description with the user name "user" in order to pass all the tests.
 </pre>
+Testing
+<pre>
+npm test will run the testing. Please do not change the user's description with the user name "user" in order to pass all the tests.
+Uncomment the signup test to run it. Signup test can only run once.
+</pre>
+Reponsive design: Using moblie phone or other small size device will let naviagtion bar turn into a checklist to select each link. In the forum page, the title of posts will be reponsive so that it will not overlap with other texts.
