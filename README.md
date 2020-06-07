@@ -3,15 +3,15 @@ Sample user:
 `user` with password `user` is a normal user.
 
 `admin` with password `admin` is an admin.
-
+<pre>
 Functionalities
 1. User management
-    Router: user.js (shared by all)
-    Model: user/userInfo.js (shared by all)
-    Controller: user/user.js (shared by all)
-    Views: user.pug layout.pug (shared by all)
-    Public: public/static/user (shared by all)
-
+   Router: user.js (shared by all)
+   Model: user/userInfo.js (shared by all)
+   Controller: user/user.js (shared by all)
+   Views: user.pug layout.pug (shared by all)
+   Public: public/static/user (shared by all)
+    
    User management has user login, signup, view profile and update profile functionalities.
    1. user login: /user#login
    2. user signup: /user#signup
@@ -59,9 +59,8 @@ Functionalities
     Rating system will show the rating of a comment, the rating of user and give "like" to add one rating for both the comment and
     user.
     1. view the rating of a comment: go to post page where there are some comments. Rating is shown next to the comment.
-    2. view the rating of a user: go to user profile page according to the step 3 in user management
-    You Must log in
-    3. give like to a comment: click on like to a comment. You cannot give multiple like to a comment.
+    2. view the rating of a user: go to user profile page according to the step 3 in user management.
+    3. (You must log in) give like to a comment: click on like to a comment. You cannot give multiple like to a comment.
 
 4. Front page
     Router: index.js
@@ -73,3 +72,4 @@ Functionalities
 
 Testing
 npm test will run the testing. Please do not change the user's description with the user name "user" in order to pass all the tests.
+</pre>
