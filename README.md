@@ -75,6 +75,10 @@ Functionalities
     Front page defines the purpose of our website and also navigate to the subforums.
     go to / to the front page.
 </pre>
+
+Importing DB
+`mongorestore --archive=test.archive`
+
 Testing
 <pre>
 npm test will run the testing. Please do not change the user's description with the user name "user"
